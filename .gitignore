@@ -25,5 +25,6 @@ target/
 # Project Specific:
 #
 
-*.txt
 *.data
+*.json
+*.txt

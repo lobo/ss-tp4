@@ -1,6 +1,6 @@
 ![...](resources/image/readme-header.png)
 
-# System Simulation: TP4
+# Time-Driven Simulation
 
 ## Build
 
@@ -29,8 +29,6 @@ In the root folder (after build):
 $ java -jar target/tp4-1.0-SNAPSHOT.jar <arguments>
 ```
 
-
-
 ## Help
 
 ```
@@ -39,11 +37,17 @@ $ java -jar target/tp4-1.0-SNAPSHOT.jar help
 
 ## Input Files Format
 
-
+...
 
 ## Output File Format
 
+...
 
+## Videos
+
+Here are some videos of the simulations:
+
+...
 
 ## Developers
 
@@ -51,9 +55,6 @@ This project has been built, designed and maintained by the following authors:
 
 * [Daniel Lobo](https://github.com/lobo)
 * [Agustín Golmar](https://github.com/agustin-golmar)
-
-## Videos
-
 
 ## Bibliography
 
