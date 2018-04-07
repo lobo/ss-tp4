@@ -64,7 +64,7 @@
 				particles = generateParticles();
 			}
 
-			final Output output = Output.getInstace();
+			final Output output = Output.getInstace(c.getOutput());
 
 			// Begin simulation:
 			TimeDrivenSimulation.of(HarmonicOscillator.of(particles)

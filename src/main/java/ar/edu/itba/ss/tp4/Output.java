@@ -18,9 +18,9 @@ public class Output {
 	}
 	
 	
-	public static Output getInstace() throws IOException{
+	public static Output getInstace(final String output) throws IOException{
 		if(instance == null)
-			instance = new Output(new PrintWriter(new BufferedWriter(new FileWriter("output.txt", true))));
+			instance = new Output(new PrintWriter(new BufferedWriter(new FileWriter(output, true))));
 		return instance;
 	}
 
