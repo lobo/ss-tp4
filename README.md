@@ -37,11 +37,39 @@ $ java -jar target/tp4-1.0-SNAPSHOT.jar help
 
 ## Input Files Format
 
-...
+Receives a JSON file with the following format (see example below):
+
+```json
+{
+	"fps"			: "60.0",
+	"deltat"			: "20000",
+	"integrator"		: "60.0",
+	"system"			: "HarmonicOscillator",
+	"outputfile"		: "output.txt"
+}
+```
 
 ## Output File Format
 
+### Simulation file
+
+```
+<N>
+<t0>
+<x> <y> <r> <vx> <vy>
 ...
+```
+
+### Animated file
+
+```
+<N>
+<t0>
+<x> <y> <r> <v>
+...
+```
+
+Where `<v>` is the module of the speed.
 
 ## Videos
 
