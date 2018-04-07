@@ -15,6 +15,9 @@
 		protected final BiConsumer<Double, List<MassiveParticle>> spy;
 
 		public TimeDrivenSimulation(final Builder builder) {
+			System.out.println(
+					"Time-Driven Simulation (T-max = " + builder.maxTime +
+					" [s], Time Step = " + builder.Δt + " [s])");
 			this.system = builder.system;
 			this.maxTime = builder.maxTime;
 			this.Δt = builder.Δt;
@@ -23,9 +26,9 @@
 
 		public TimeDrivenSimulation run() {
 			System.out.println("Running...");
-			//system.bootstrap();
-			for (double time = 0.0; time < maxTime; time += Δt) {
-				System.out.println("Time: " + time);
+			final long startTime = System.nanoTime();
+			system.bootstrap();
+			for (double time = 0.0; time <= maxTime; time += Δt) {
 				/*
 				Inicializo la lista de partículas en el estado inicial.
 				En cada ciclo uso el integrador para computar la nueva posición y velocidad.
@@ -33,7 +36,11 @@
 				Actualizo el nuevo estado con partículas nuevas (en la misma posición).
 				Repetir...
 				*/
+				System.out.print("\t\tTime reached: " + time + "\r");
 			}
+			System.out.println(
+					"\n\n\tEnd simulation in " +
+					1E-9 * (System.nanoTime() - startTime) + " sec.\n");
 			return this;
 		}
 
