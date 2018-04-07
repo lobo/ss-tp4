@@ -19,6 +19,7 @@ public final class Configuration {
 	private String inputfile = "";
 	private String integration = "";
 	private String system = "";
+	private Double maxtime = 0.0;
 		
 	public static String getConfigurationFilename() {
 		return CONFIGURATION_FILENAME;
@@ -41,6 +42,10 @@ public final class Configuration {
 	}
 
 	public Double getDeltat() {
+		return deltat;
+	}
+	
+	public Double getMaxtime() {
 		return deltat;
 	}
 
