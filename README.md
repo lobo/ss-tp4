@@ -45,7 +45,8 @@ Receives a JSON file with the following format (see example below):
 	"deltat"			: "20000",
 	"integrator"		: "60.0",
 	"system"			: "HarmonicOscillator",
-	"outputfile"		: "output.txt"
+	"outputfile"		: "output.txt",
+	"maxtime"		: "123123",
 }
 ```
 
