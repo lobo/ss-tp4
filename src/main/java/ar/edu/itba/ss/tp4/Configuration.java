@@ -14,35 +14,30 @@ public final class Configuration {
 		= "config.json";
 	
 
-	private Long events = 0L;
-	private Double tmax = 0.0;
-	private Double l = 0.0;
+	private Integer fps = 0;
 	private Double deltat = 0.0;
 	private String inputfile = "";
-	private String outputfile = "";
+	private String integration = "";
+	private String system = "";
 		
 	public static String getConfigurationFilename() {
 		return CONFIGURATION_FILENAME;
 	}
 
-	public Long getEvents() {
-		return events;
-	}
-
-	public Double getTmax() {
-		return tmax;
-	}
-
-	public Double getL() {
-		return l;
+	public Integer getFPS() {
+		return fps;
 	}
 	
 	public String getInputfile() {
 		return inputfile;
 	}
-
-	public String getOutputfile() {
-		return outputfile;
+	
+	public String getIntegration() {
+		return integration;
+	}
+	
+	public String getSystem() {
+		return system;
 	}
 
 	public Double getDeltat() {

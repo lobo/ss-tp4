@@ -69,8 +69,6 @@ Receives a JSON file with the following format (see example below):
 
 Where `<v>` is the module of the speed.
 
-...
-
 ## Videos
 
 Here are some videos of the simulations:
