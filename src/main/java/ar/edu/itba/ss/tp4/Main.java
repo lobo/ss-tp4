@@ -20,6 +20,7 @@
 	import ar.edu.itba.ss.tp4.integrators.BeemanIntegrator;
 
 	import ar.edu.itba.ss.tp4.Configurator;
+	import ar.edu.itba.ss.tp4.Output;
 	import ar.edu.itba.ss.tp3.core.MassiveParticle;
 
 	/**
@@ -42,8 +43,8 @@
 			final double Δt = c.getDeltat();
 			final double maxtime = c.getMaxtime();
 			final String integration = c.getIntegration();
-			final String inputFilename = "./resources/data/" + c.getInputfile();
-			final PrintWriter pw = new PrintWriter(inputFilename);
+			final String outputFile = "./resources/data/" + c.getOutputfile();
+			final PrintWriter pw = new PrintWriter(outputFile);
 			List<MassiveParticle> particles = new ArrayList<MassiveParticle>();
 
 			if(mode.equals("HarmonicOscillator")) {
@@ -51,12 +52,17 @@
 			} else {
 				particles = generateParticles();
 			}
-
+			
+			
+			Output output = Output.getInstace();
+			
 			// Begin simulation:
 			TimeDrivenSimulation.of(new HarmonicOscillator())
 				.with(new BeemanIntegrator())
 				.by(Δt)
-				.spy((t, ps) -> {})
+				.spy((t, ps) -> {
+					output.write(ps, t, pw);
+				})
 				.build()
 				.run();
 		}
@@ -65,7 +71,6 @@
 			System.out.println("A time-driven animation...");
 		}
 
-		private static final String SIMULATION_FILE = "./resources/data/simulation-file.txt";
 		private static final String ANIMATION_FILE  = "./resources/data/animation-file.txt";
 
 		public static void main(final String [] arguments)
@@ -74,7 +79,7 @@
 			final Configurator config = new Configurator();
 			config.load();
 			String system = config.getConfiguration().getSystem();
-			String inputFilename = "./resources/data/" + config.getConfiguration().getInputfile().toString();
+			String inputFilename = "./resources/data/" + config.getConfiguration().getOutputfile().toString();
 			
 			PrintWriter pw = new PrintWriter(inputFilename);
 
