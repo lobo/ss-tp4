@@ -41,8 +41,10 @@ Receives a JSON file with the following format (see example below):
 
 ```json
 {
-	"deltat"			: "20000",
 	"fps"			: "60.0",
+	"deltat"			: "20000",
+	"integrator"		: "60.0",
+	"system"			: "HarmonicOscillator",
 	"outputfile"		: "output.txt"
 }
 ```
