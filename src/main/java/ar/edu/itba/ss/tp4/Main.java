@@ -56,10 +56,11 @@
 			//generateAnimationFile(particles, 10, inputFilename);
 
 			// Begin simulation:
-			TimeDrivenSimulation.of(new HarmonicOscillator())
+			TimeDrivenSimulation.of(new HarmonicOscillator(particles))
 				.with(new BeemanIntegrator())
-				.by(Δt)
 				.spy((t, ps) -> {})
+				.maxTime(5.0)
+				.by(Δt)
 				.build()
 				.run();
 		}
