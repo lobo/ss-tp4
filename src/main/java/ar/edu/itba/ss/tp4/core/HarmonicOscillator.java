@@ -1,6 +1,7 @@
 
 	package ar.edu.itba.ss.tp4.core;
 
+	import java.util.Arrays;
 	import java.util.List;
 
 	import ar.edu.itba.ss.tp3.core.MassiveParticle;
@@ -21,14 +22,23 @@
 		}
 
 		@Override
-		public ParticleSystem bootstrap() {
-			return this;
+		public List<MassiveParticle> bootstrap() {
+			final List<MassiveParticle> particles = Arrays.asList(particle);
+			integrator.setup(particles);
+			return particles;
 		}
 
 		@Override
-		public ParticleSystem evolve(final double Δt) {
+		public List<MassiveParticle> evolve(final double Δt) {
 			// Completar...
-			return this;
+			// return integrator.integrate(Δt);
+			return Arrays.asList(particle);
+		}
+
+		@Override
+		public double force(final double Δt) {
+			// No depende de Δt!
+			return -10000.0 * particle.getX() - 100.0 * particle.getVx();
 		}
 
 		public static Builder of(final List<MassiveParticle> particles) {
@@ -40,7 +50,7 @@
 			protected final List<MassiveParticle> particles;
 			protected Integrator integrator;
 
-			public Builder(List<MassiveParticle> particles) {
+			public Builder(final List<MassiveParticle> particles) {
 				this.particles = particles;
 			}
 

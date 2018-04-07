@@ -15,14 +15,20 @@
 		}
 
 		@Override
-		public ParticleSystem bootstrap() {
+		public List<MassiveParticle> bootstrap() {
 			// Completar...
-			return this;
+			return null;
 		}
 
 		@Override
-		public ParticleSystem evolve(double Δt) {
+		public List<MassiveParticle> evolve(double Δt) {
 			// Completar...
-			return this;
+			return null;
+		}
+
+		@Override
+		public double force(final double Δt) {
+			// Completar...
+			return 0;
 		}
 	}

@@ -27,7 +27,7 @@
 		public TimeDrivenSimulation run() {
 			System.out.println("Running...");
 			final long startTime = System.nanoTime();
-			system.bootstrap();
+			spy.accept(0.0, system.bootstrap());
 			for (double time = 0.0; time <= maxTime; time += Δt) {
 				/*
 				Inicializo la lista de partículas en el estado inicial.
@@ -36,6 +36,7 @@
 				Actualizo el nuevo estado con partículas nuevas (en la misma posición).
 				Repetir...
 				*/
+				spy.accept(time, system.evolve(Δt));
 				System.out.print("\t\tTime reached: " + time + "\r");
 			}
 			System.out.println(
