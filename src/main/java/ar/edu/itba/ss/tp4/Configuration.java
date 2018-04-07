@@ -16,8 +16,8 @@ public final class Configuration {
 
 	private Integer fps = 0;
 	private Double deltat = 0.0;
-	private String outputFile = "";
-	private String integration = "";
+	private String output = "";
+	private String integrator = "";
 	private String system = "";
 	private Double maxtime = 0.0;
 		
@@ -29,12 +29,12 @@ public final class Configuration {
 		return fps;
 	}
 	
-	public String getOutputfile() {
-		return outputFile;
+	public String getOutput() {
+		return output;
 	}
 	
-	public String getIntegration() {
-		return integration;
+	public String getIntegrator() {
+		return integrator;
 	}
 	
 	public String getSystem() {
@@ -46,7 +46,7 @@ public final class Configuration {
 	}
 	
 	public Double getMaxtime() {
-		return deltat;
+		return maxtime;
 	}
 
 }

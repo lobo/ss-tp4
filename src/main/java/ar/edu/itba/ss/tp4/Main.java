@@ -2,7 +2,6 @@
 	package ar.edu.itba.ss.tp4;
 
 	import java.io.IOException;
-	import java.io.PrintWriter;
 	import java.util.ArrayList;
 	import java.util.List;
 
@@ -12,10 +11,10 @@
 	import ar.edu.itba.ss.tp4.core.HarmonicOscillator;
 	import ar.edu.itba.ss.tp4.core.TimeDrivenSimulation;
 	import ar.edu.itba.ss.tp4.integrators.BeemanIntegrator;
-import ar.edu.itba.ss.tp4.integrators.GearIntegrator;
-import ar.edu.itba.ss.tp4.integrators.VelocityVerlet;
-import ar.edu.itba.ss.tp4.interfaces.Integrator;
-import ar.edu.itba.ss.tp4.Configurator;
+	import ar.edu.itba.ss.tp4.integrators.GearIntegrator;
+	import ar.edu.itba.ss.tp4.integrators.VelocityVerlet;
+	import ar.edu.itba.ss.tp4.interfaces.Integrator;
+	import ar.edu.itba.ss.tp4.Configurator;
 	import ar.edu.itba.ss.tp4.Output;
 	import ar.edu.itba.ss.tp3.core.MassiveParticle;
 
@@ -37,12 +36,10 @@ import ar.edu.itba.ss.tp4.Configurator;
 			final Configuration c = config.getConfiguration();
 			final double Δt = c.getDeltat();
 			final double limit = c.getMaxtime();
-			final String outputFile = "./resources/data/" + c.getOutputfile();
-			final PrintWriter pw = new PrintWriter(outputFile);
-			List<MassiveParticle> particles = new ArrayList<MassiveParticle>();
-
+			List<MassiveParticle> particles = new ArrayList<>();
 			Integrator integrator;
-			switch (c.getIntegration()) {
+
+			switch (c.getIntegrator()) {
 				case "VelocityVerlet" : {
 					integrator = new VelocityVerlet();
 					break;
@@ -73,7 +70,7 @@ import ar.edu.itba.ss.tp4.Configurator;
 			TimeDrivenSimulation.of(HarmonicOscillator.of(particles)
 					.with(integrator)
 					.build())
-				.spy((t, ps) -> output.write(ps, t))
+				.spy(output::write)
 				.maxTime(limit)
 				.by(Δt)
 				.build()
