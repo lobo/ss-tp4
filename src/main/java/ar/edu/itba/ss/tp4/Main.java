@@ -6,6 +6,10 @@
 	import com.fasterxml.jackson.core.JsonParseException;
 	import com.fasterxml.jackson.databind.JsonMappingException;
 
+	import ar.edu.itba.ss.tp4.core.HarmonicOscillator;
+	import ar.edu.itba.ss.tp4.core.TimeDrivenSimulation;
+	import ar.edu.itba.ss.tp4.integrators.BeemanIntegrator;
+
 		/**
 		* <p>Punto de entrada principal de la simulación. Se encarga de
 		* configurar los parámetros de operación y de desplegar el
@@ -16,6 +20,15 @@
 
 		protected static void simulateMode() {
 			System.out.println("A time-driven simulation...");
+
+			final double Δt = 0.1;
+
+			TimeDrivenSimulation.of(new HarmonicOscillator())
+				.with(new BeemanIntegrator())
+				.by(Δt)
+				.spy((t, ps) -> {})
+				.build()
+				.run();
 		}
 
 		protected static void animateMode() {
