@@ -9,11 +9,13 @@
 	import com.fasterxml.jackson.databind.JsonMappingException;
 
 	import ar.edu.itba.ss.tp4.core.HarmonicOscillator;
-	import ar.edu.itba.ss.tp4.core.TimeDrivenSimulation;
+import ar.edu.itba.ss.tp4.core.SolarSystem;
+import ar.edu.itba.ss.tp4.core.TimeDrivenSimulation;
 	import ar.edu.itba.ss.tp4.integrators.BeemanIntegrator;
 	import ar.edu.itba.ss.tp4.integrators.GearIntegrator;
 	import ar.edu.itba.ss.tp4.integrators.VelocityVerlet;
 	import ar.edu.itba.ss.tp4.interfaces.Integrator;
+	import ar.edu.itba.ss.tp4.interfaces.ParticleSystem;
 	import ar.edu.itba.ss.tp4.Configurator;
 	import ar.edu.itba.ss.tp4.Output;
 	import ar.edu.itba.ss.tp3.core.MassiveParticle;
@@ -29,15 +31,14 @@
 		protected static void simulateMode(final String mode)
 				throws JsonParseException, JsonMappingException, IOException {
 
-			System.out.println("A time-driven simulation...");
 			final Configurator config = new Configurator();
 			config.load();
 
 			final Configuration c = config.getConfiguration();
 			final double Δt = c.getDeltat();
 			final double limit = c.getMaxtime();
-			List<MassiveParticle> particles = new ArrayList<>();
 			Integrator integrator;
+			ParticleSystem system;
 
 			switch (c.getIntegrator()) {
 				case "VelocityVerlet" : {
@@ -59,17 +60,17 @@
 			}
 
 			if(mode.equals("HarmonicOscillator")) {
-				particles = generateSingleParticle();
+				system = HarmonicOscillator.of(generateSingleParticle())
+							.with(integrator)
+							.build();
 			} else {
-				particles = generateParticles();
+				system = new SolarSystem(generateParticles());
 			}
 
 			final Output output = Output.getInstace(c.getOutput());
 
 			// Begin simulation:
-			TimeDrivenSimulation.of(HarmonicOscillator.of(particles)
-					.with(integrator)
-					.build())
+			TimeDrivenSimulation.of(system)
 				.spy(output::write)
 				.maxTime(limit)
 				.by(Δt)
