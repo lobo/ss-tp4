@@ -146,30 +146,6 @@
 			return particles;
 		}
 
-		private static void generateAnimationFile(final List<MassiveParticle> particles, final int N, final String input_filename) throws FileNotFoundException {
-			System.out.println("The output has been written into a file: " + input_filename);
-			final String filename = input_filename;
-			File file = new File(filename);
-			FileOutputStream fos = new FileOutputStream(file);
-			PrintStream ps = new PrintStream(fos);
-			
-			PrintStream oldOut = System.out;
-			System.setOut(ps);
-			
-			System.out.println(N);
-			particles.forEach((particle) -> {
-				System.out.println( 
-						particle.getX() + " " + 
-						particle.getY() + " " +
-						particle.getRadius() + " " +
-						particle.getVx() + " " +
-						particle.getVy() + " " +
-						particle.getMass() + " "
-						);
-			});
-			System.setOut(oldOut);
-		}
-
 		protected enum EXIT_CODE {
 
 			NO_ARGS(-1), 
