@@ -1,6 +1,7 @@
 package ar.edu.itba.ss.tp4;
 
 import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -10,23 +11,36 @@ import ar.edu.itba.ss.tp3.core.MassiveParticle;
 
 public class Output {
 	private static Output instance = null;
+	private static PrintWriter pw = null;
 	
-	public static Output getInstace(){
+	
+	private Output(PrintWriter printWriter) {
+		pw = printWriter;
+	}
+	
+	
+	public static Output getInstace() throws IOException{
 		if(instance == null)
-			instance = new Output();
+			instance = new Output(new PrintWriter(new BufferedWriter(new FileWriter("output.txt", true))));
 		return instance;
 	}
 
-	public void write(List<MassiveParticle> list, double time, PrintWriter pw){
-		try(PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("output.txt", true)))) {
+	public void write(List<MassiveParticle> list, double time){
+		if(time == 0){
+			try{
+				
+				pw.close();
+			}catch (Exception e){
+				e.printStackTrace();
+			}
+		}
+		try(PrintWriter out = pw) {
 			out.write(String.valueOf(list.size()) + "\n");
 			out.write(String.valueOf(time) + "\n");
 			
 			for(MassiveParticle p: list){
 				out.write(p.getX() + " " +  p.getY() + " " + p.getRadius() + p.getVx() + p.getVy() + "\n");
 			}
-		}catch (IOException e) {
-		    e.printStackTrace();
 		}
 	}
 	

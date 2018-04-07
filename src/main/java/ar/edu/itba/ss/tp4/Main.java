@@ -51,7 +51,7 @@
 			// Begin simulation:
 			TimeDrivenSimulation.of(new HarmonicOscillator(particles))
 				.with(new BeemanIntegrator())
-				.spy((t, ps) -> output.write(ps, t, pw))
+				.spy((t, ps) -> output.write(ps, t))
 				.maxTime(maxtime)
 				.by(Δt)
 				.build()
