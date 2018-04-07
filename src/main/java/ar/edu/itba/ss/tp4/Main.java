@@ -12,8 +12,10 @@
 	import ar.edu.itba.ss.tp4.core.HarmonicOscillator;
 	import ar.edu.itba.ss.tp4.core.TimeDrivenSimulation;
 	import ar.edu.itba.ss.tp4.integrators.BeemanIntegrator;
-
-	import ar.edu.itba.ss.tp4.Configurator;
+import ar.edu.itba.ss.tp4.integrators.GearIntegrator;
+import ar.edu.itba.ss.tp4.integrators.VelocityVerlet;
+import ar.edu.itba.ss.tp4.interfaces.Integrator;
+import ar.edu.itba.ss.tp4.Configurator;
 	import ar.edu.itba.ss.tp4.Output;
 	import ar.edu.itba.ss.tp3.core.MassiveParticle;
 
@@ -34,11 +36,30 @@
 
 			final Configuration c = config.getConfiguration();
 			final double Δt = c.getDeltat();
-			final double maxtime = c.getMaxtime();
-			final String integration = c.getIntegration();
+			final double limit = c.getMaxtime();
 			final String outputFile = "./resources/data/" + c.getOutputfile();
 			final PrintWriter pw = new PrintWriter(outputFile);
 			List<MassiveParticle> particles = new ArrayList<MassiveParticle>();
+
+			Integrator integrator;
+			switch (c.getIntegration()) {
+				case "VelocityVerlet" : {
+					integrator = new VelocityVerlet();
+					break;
+				}
+				case "Beeman" : {
+					integrator = new BeemanIntegrator();
+					break;
+				}
+				case "Gear" : {
+					integrator = new GearIntegrator();
+					break;
+				}
+				default : {
+					throw new IllegalArgumentException(
+						"El integrador es inválido.");
+				}
+			}
 
 			if(mode.equals("HarmonicOscillator")) {
 				particles = generateSingleParticle();
@@ -49,10 +70,11 @@
 			final Output output = Output.getInstace();
 
 			// Begin simulation:
-			TimeDrivenSimulation.of(new HarmonicOscillator(particles))
-				.with(new BeemanIntegrator())
-				.spy((t, ps) -> output.write(ps, t, pw))
-				.maxTime(maxtime)
+			TimeDrivenSimulation.of(HarmonicOscillator.of(particles)
+					.with(integrator)
+					.build())
+				.spy((t, ps) -> output.write(ps, t))
+				.maxTime(limit)
 				.by(Δt)
 				.build()
 				.run();
@@ -63,17 +85,12 @@
 			// Acá usás FPS...
 		}
 
-		private static final String ANIMATION_FILE  = "./resources/data/animation-file.txt";
-
 		public static void main(final String [] arguments)
 				throws JsonParseException, JsonMappingException, IOException {
-			
+
 			final Configurator config = new Configurator();
 			config.load();
-			String system = config.getConfiguration().getSystem();
-			String inputFilename = "./resources/data/" + config.getConfiguration().getOutputfile().toString();
-			
-			PrintWriter pw = new PrintWriter(inputFilename);
+			final String system = config.getConfiguration().getSystem();
 
 			if (arguments.length == 0) {
 				System.out.println("[FAIL] - No arguments passed. Try 'help' for more information.");

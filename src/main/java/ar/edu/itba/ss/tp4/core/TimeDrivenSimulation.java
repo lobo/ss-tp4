@@ -5,21 +5,17 @@
 	import java.util.function.BiConsumer;
 
 	import ar.edu.itba.ss.tp3.core.MassiveParticle;
-	import ar.edu.itba.ss.tp4.integrators.GearIntegrator;
-	import ar.edu.itba.ss.tp4.interfaces.Integrator;
 	import ar.edu.itba.ss.tp4.interfaces.ParticleSystem;
 
 	public class TimeDrivenSimulation {
 
 		protected final ParticleSystem system;
-		protected final Integrator integrator;
 		protected final double maxTime;
 		protected final double Δt;
 		protected final BiConsumer<Double, List<MassiveParticle>> spy;
 
 		public TimeDrivenSimulation(final Builder builder) {
 			this.system = builder.system;
-			this.integrator = builder.integrator;
 			this.maxTime = builder.maxTime;
 			this.Δt = builder.Δt;
 			this.spy = builder.spy;
@@ -48,14 +44,12 @@
 		public static class Builder {
 
 			protected final ParticleSystem system;
-			protected Integrator integrator;
 			protected double maxTime;
 			protected double Δt;
 			protected BiConsumer<Double, List<MassiveParticle>> spy;
 
 			public Builder(final ParticleSystem system) {
 				this.system = system;
-				this.integrator = new GearIntegrator();
 				this.maxTime = 10;
 				this.Δt = 1;
 				this.spy = (t, ps) -> {};
@@ -63,11 +57,6 @@
 
 			public TimeDrivenSimulation build() {
 				return new TimeDrivenSimulation(this);
-			}
-
-			public Builder with(final Integrator integrator) {
-				this.integrator = integrator;
-				return this;
 			}
 
 			public Builder by(final double Δt) {
