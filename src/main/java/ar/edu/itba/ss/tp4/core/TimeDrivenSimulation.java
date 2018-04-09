@@ -3,6 +3,7 @@
 
 	import java.util.List;
 	import java.util.function.BiConsumer;
+	import java.util.stream.LongStream;
 
 	import ar.edu.itba.ss.tp3.core.MassiveParticle;
 	import ar.edu.itba.ss.tp4.interfaces.Integrator;
@@ -32,10 +33,12 @@
 			System.out.println("Running...");
 			final long startTime = System.nanoTime();
 			spy.accept(0.0, integrator.getState());
-			for (double time = Δt; time <= maxTime; time += Δt) {
-				spy.accept(time, integrator.integrate(Δt));
-				System.out.print("\t\tTime reached: " + time + "\r");
-			}
+			LongStream.rangeClosed(1, Math.round(maxTime/Δt))
+				.mapToDouble(k -> k * Δt)
+				.forEachOrdered(time -> {
+					spy.accept(time, integrator.integrate(Δt));
+					System.out.print("\t\tTime reached: " + time + "\r");
+				});
 			System.out.println(
 					"\n\n\tEnd simulation in " +
 					1E-9 * (System.nanoTime() - startTime) + " sec.\n");

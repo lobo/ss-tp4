@@ -14,13 +14,15 @@
 
 		protected final ForceField<MassiveParticle> force;
 		protected final List<MassiveParticle> state;
+		protected final boolean velocityDependent;
 		protected final Vector [] fOld;
 
 		public BeemanIntegrator(final Builder builder) {
 			this.force = builder.force;
 			this.state = builder.state;
+			this.velocityDependent = builder.velocityDependent;
 			this.fOld = new Vector[state.size()];
-			Arrays.fill(fOld, Vector.of(0.0, 0.0)); // Mejorar...
+			Arrays.setAll(fOld, k -> force.apply(state, state.get(k)));
 		}
 
 		public static Builder of(final ForceField<MassiveParticle> force) {
@@ -39,11 +41,18 @@
 				final MassiveParticle p = state.get(i);
 				final Vector f = force.apply(state, p);
 				final Vector r = r(Δt, p, f, fOld[i]);
-				final Vector vp = vp(Δt, p, f, fOld[i]);
 				forces.add(f);
-				state.set(i, new MassiveParticle(
-								r.getX(), r.getY(), p.getRadius(),
-								vp.getX(), vp.getY(), p.getMass()));
+				if (velocityDependent) {
+					final Vector vp = vp(Δt, p, f, fOld[i]);
+					state.set(i, new MassiveParticle(
+							r.getX(), r.getY(), p.getRadius(),
+							vp.getX(), vp.getY(), p.getMass()));
+				}
+				else {
+					state.set(i, new MassiveParticle(
+							r.getX(), r.getY(), p.getRadius(),
+							p.getVx(), p.getVy(), p.getMass()));
+				}
 			}
 			for (int i = 0; i < state.size(); ++i) {
 				final MassiveParticle p = state.get(i);
@@ -59,13 +68,21 @@
 		public static class Builder
 			extends IntegratorBuilder<BeemanIntegrator> {
 
+			protected boolean velocityDependent;
+
 			public Builder(final ForceField<MassiveParticle> force) {
 				super(force);
+				this.velocityDependent = false;
 			}
 
 			@Override
 			public BeemanIntegrator build() {
 				return new BeemanIntegrator(this);
+			}
+
+			public Builder velocityDependent(final boolean dependent) {
+				this.velocityDependent = dependent;
+				return this;
 			}
 		}
 
@@ -92,7 +109,7 @@
 				final MassiveParticle p,
 				final Vector fNew, final Vector f, final Vector fOld) {
 			return Vector.of(
-					p.getVx() + Δt*(1.0*fNew.getX()/3.0+5.0*f.getX()/6.0-1.0*fOld.getX()/6.0)/p.getMass(),
-					p.getVy() + Δt*(1.0*fNew.getY()/3.0+5.0*f.getY()/6.0-1.0*fOld.getY()/6.0)/p.getMass());
+					p.getVx() + Δt*(fNew.getX()/3.0+5.0*f.getX()/6.0-fOld.getX()/6.0)/p.getMass(),
+					p.getVy() + Δt*(fNew.getY()/3.0+5.0*f.getY()/6.0-fOld.getY()/6.0)/p.getMass());
 		}
 	}

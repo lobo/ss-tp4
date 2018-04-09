@@ -52,6 +52,7 @@
 				}
 				case "Beeman" : {
 					integrator = BeemanIntegrator.of(force)
+							.velocityDependent(false)
 							.withInitial(state)
 							.build();
 					break;
@@ -143,12 +144,12 @@
 			List<MassiveParticle> particles = new ArrayList<MassiveParticle>();
 			
 			particles.add(new MassiveParticle(
-					1,
-					0,
-					1,
-					(-10/14),
-					0,
-					70
+					1.0,
+					0.0,
+					1.0,
+					(-10.0/14.0),
+					0.0,
+					70.0
 			));  // Single Particle
 			
 			return particles;
