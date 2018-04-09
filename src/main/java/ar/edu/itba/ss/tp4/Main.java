@@ -8,14 +8,14 @@
 	import com.fasterxml.jackson.core.JsonParseException;
 	import com.fasterxml.jackson.databind.JsonMappingException;
 
-	import ar.edu.itba.ss.tp4.core.HarmonicOscillator;
-import ar.edu.itba.ss.tp4.core.SolarSystem;
-import ar.edu.itba.ss.tp4.core.TimeDrivenSimulation;
+	import ar.edu.itba.ss.tp4.core.TimeDrivenSimulation;
+	import ar.edu.itba.ss.tp4.fields.GravitationalField;
+	import ar.edu.itba.ss.tp4.fields.HarmonicOscillator;
 	import ar.edu.itba.ss.tp4.integrators.BeemanIntegrator;
 	import ar.edu.itba.ss.tp4.integrators.GearIntegrator;
 	import ar.edu.itba.ss.tp4.integrators.VelocityVerlet;
+	import ar.edu.itba.ss.tp4.interfaces.ForceField;
 	import ar.edu.itba.ss.tp4.interfaces.Integrator;
-	import ar.edu.itba.ss.tp4.interfaces.ParticleSystem;
 	import ar.edu.itba.ss.tp4.Configurator;
 	import ar.edu.itba.ss.tp4.Output;
 	import ar.edu.itba.ss.tp3.core.MassiveParticle;
@@ -31,26 +31,35 @@ import ar.edu.itba.ss.tp4.core.TimeDrivenSimulation;
 		protected static void simulateMode(final String mode)
 				throws JsonParseException, JsonMappingException, IOException {
 
-			final Configurator config = new Configurator();
-			config.load();
+			final Configurator configurator = new Configurator();
+			configurator.load();
+			final Configuration config = configurator.getConfiguration();
+			final Output output = Output.getInstace(config.getOutput());
+			final ForceField<MassiveParticle> force = mode.equals("HarmonicOscillator")?
+					new HarmonicOscillator() :
+					new GravitationalField();
+			final List<MassiveParticle> state = mode.equals("HarmonicOscillator")?
+					generateSingleParticle() :
+					generateParticles();
 
-			final Configuration c = config.getConfiguration();
-			final double Δt = c.getDeltat();
-			final double limit = c.getMaxtime();
-			Integrator integrator;
-			ParticleSystem system;
-
-			switch (c.getIntegrator()) {
+			Integrator<MassiveParticle> integrator;
+			switch (config.getIntegrator()) {
 				case "VelocityVerlet" : {
-					integrator = new VelocityVerlet();
+					integrator = VelocityVerlet.of(force)
+							.withInitial(state)
+							.build();
 					break;
 				}
 				case "Beeman" : {
-					integrator = new BeemanIntegrator();
+					integrator = BeemanIntegrator.of(force)
+							.withInitial(state)
+							.build();
 					break;
 				}
 				case "Gear" : {
-					integrator = new GearIntegrator();
+					integrator = GearIntegrator.of(force)
+							.withInitial(state)
+							.build();
 					break;
 				}
 				default : {
@@ -59,23 +68,15 @@ import ar.edu.itba.ss.tp4.core.TimeDrivenSimulation;
 				}
 			}
 
-			if(mode.equals("HarmonicOscillator")) {
-				system = HarmonicOscillator.of(generateSingleParticle())
-							.with(integrator)
-							.build();
-			} else {
-				system = new SolarSystem(generateParticles());
-			}
-
-			final Output output = Output.getInstace(c.getOutput());
-
 			// Begin simulation:
-			TimeDrivenSimulation.of(system)
+			TimeDrivenSimulation.of(integrator)
 				.spy(output::write)
-				.maxTime(limit)
-				.by(Δt)
+				.maxTime(config.getMaxtime())
+				.by(config.getDeltat())
 				.build()
 				.run();
+
+			output.close();
 		}
 
 		protected static void animateMode() {

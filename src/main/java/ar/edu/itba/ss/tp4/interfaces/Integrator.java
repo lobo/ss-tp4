@@ -5,8 +5,8 @@
 
 	import ar.edu.itba.ss.tp3.core.MassiveParticle;
 
-	public interface Integrator {
+	public interface Integrator<T extends MassiveParticle> {
 
-		public Integrator setup(final List<MassiveParticle> particles);
-		public List<MassiveParticle> integrate(final double Δt);
+		public List<T> getState();
+		public List<T> integrate(final double Δt);
 	}

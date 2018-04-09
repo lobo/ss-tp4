@@ -5,38 +5,35 @@
 	import java.util.function.BiConsumer;
 
 	import ar.edu.itba.ss.tp3.core.MassiveParticle;
-	import ar.edu.itba.ss.tp4.interfaces.ParticleSystem;
+	import ar.edu.itba.ss.tp4.interfaces.Integrator;
 
 	public class TimeDrivenSimulation {
 
-		protected final ParticleSystem system;
+		protected final Integrator<MassiveParticle> integrator;
+		protected final BiConsumer<Double, List<MassiveParticle>> spy;
 		protected final double maxTime;
 		protected final double Δt;
-		protected final BiConsumer<Double, List<MassiveParticle>> spy;
 
 		public TimeDrivenSimulation(final Builder builder) {
 			System.out.println(
 					"Time-Driven Simulation (T-max = " + builder.maxTime +
 					" [s], Time Step = " + builder.Δt + " [s])");
-			this.system = builder.system;
+			this.integrator = builder.integrator;
+			this.spy = builder.spy;
 			this.maxTime = builder.maxTime;
 			this.Δt = builder.Δt;
-			this.spy = builder.spy;
+		}
+
+		public static Builder of(final Integrator<MassiveParticle> integrator) {
+			return new Builder(integrator);
 		}
 
 		public TimeDrivenSimulation run() {
 			System.out.println("Running...");
 			final long startTime = System.nanoTime();
-			spy.accept(0.0, system.bootstrap());
-			for (double time = 0.0; time <= maxTime; time += Δt) {
-				/*
-				Inicializo la lista de partículas en el estado inicial.
-				En cada ciclo uso el integrador para computar la nueva posición y velocidad.
-				¿Hay que almacenar el estado de las integraciones?
-				Actualizo el nuevo estado con partículas nuevas (en la misma posición).
-				Repetir...
-				*/
-				spy.accept(time, system.evolve(Δt));
+			spy.accept(0.0, integrator.getState());
+			for (double time = Δt; time <= maxTime; time += Δt) {
+				spy.accept(time, integrator.integrate(Δt));
 				System.out.print("\t\tTime reached: " + time + "\r");
 			}
 			System.out.println(
@@ -45,31 +42,22 @@
 			return this;
 		}
 
-		public static Builder of(final ParticleSystem system) {
-			return new Builder(system);
-		}
-
 		public static class Builder {
 
-			protected final ParticleSystem system;
+			protected final Integrator<MassiveParticle> integrator;
+			protected BiConsumer<Double, List<MassiveParticle>> spy;
 			protected double maxTime;
 			protected double Δt;
-			protected BiConsumer<Double, List<MassiveParticle>> spy;
 
-			public Builder(final ParticleSystem system) {
-				this.system = system;
-				this.maxTime = 10;
-				this.Δt = 1;
+			public Builder(final Integrator<MassiveParticle> integrator) {
+				this.integrator = integrator;
 				this.spy = (t, ps) -> {};
+				this.maxTime = 10.0;
+				this.Δt = 1.0;
 			}
 
 			public TimeDrivenSimulation build() {
 				return new TimeDrivenSimulation(this);
-			}
-
-			public Builder by(final double Δt) {
-				this.Δt = Δt;
-				return this;
 			}
 
 			public Builder spy(final BiConsumer<Double, List<MassiveParticle>> spy) {
@@ -79,6 +67,11 @@
 
 			public Builder maxTime(final double maxTime) {
 				this.maxTime = maxTime;
+				return this;
+			}
+
+			public Builder by(final double Δt) {
+				this.Δt = Δt;
 				return this;
 			}
 		}
