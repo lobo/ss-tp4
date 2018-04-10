@@ -31,7 +31,7 @@
 
 		@Override
 		public boolean isVelocityDependent() {
-			return false;
+			return true;
 		}
 
 		@Override

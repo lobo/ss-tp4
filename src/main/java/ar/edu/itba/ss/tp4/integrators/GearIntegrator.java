@@ -35,9 +35,11 @@
 
 		@Override
 		public List<MassiveParticle> integrate(final double Δt) {
-			final List<Vector> forces = new ArrayList<>();
+			final int N = state.size();
+			final List<Vector> accelerations = new ArrayList<>(N);
+			final List<MassiveParticle> predicted = new ArrayList<>(N);
 			final double Δ [] = getΔ(Δt);
-			for (int i = 0; i < state.size(); ++i) {
+			for (int i = 0; i < N; ++i) {
 				final MassiveParticle p = state.get(i);
 				final double mass = p.getMass();
 				final Vector r2 = force.apply(state, p).dividedBy(mass);
@@ -47,15 +49,15 @@
 				final Vector r0p = r0p(Δ, p, r2, r3, r4, r5);
 				final Vector r1p = r1p(Δ, p, r2, r3, r4, r5);
 				final Vector r2p = r2p(Δ, p, r2, r3, r4, r5);
-				forces.add(r2p);
-				state.set(i, new MassiveParticle(
+				accelerations.add(r2p);
+				predicted.add(new MassiveParticle(
 						r0p.getX(), r0p.getY(), p.getRadius(),
 						r1p.getX(), r1p.getY(), mass));
 			}
-			for (int i = 0; i < state.size(); ++i) {
-				final MassiveParticle p = state.get(i);
-				final Vector r2p = forces.get(i);
-				final Vector r2New = force.apply(state, p).dividedBy(p.getMass());
+			for (int i = 0; i < N; ++i) {
+				final MassiveParticle p = predicted.get(i);
+				final Vector r2p = accelerations.get(i);
+				final Vector r2New = force.apply(predicted, p).dividedBy(p.getMass());
 				final Vector ΔR2 = r2New.subtract(r2p).multiplyBy(0.5*Δt*Δt);
 				if (force.isVelocityDependent()) {
 					state.set(i, new MassiveParticle(

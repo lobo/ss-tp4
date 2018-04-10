@@ -15,8 +15,6 @@
 
 	function [] = harmonic(sources, step)
 
-		feature('DefaultCharacterSet', 'UTF8');
-
 		x = [];
 		for k = 1:size(sources, 2)
 			file = fopen(sources{k}{1}, 'r');
@@ -48,14 +46,14 @@
 		time = 0.0:step:5.0;
 		realX = exp(-10.0 .* time / 14.0) .* cos(time .* sqrt(1000.0/7.0 - 100.0/196.0));
 
-		legends = {'Solución Analítica'};
+		legends = {'Solucion Analitica'};
 		plot(time, realX);
 		for k = 1:size(x, 2)
 			plot(time, x(:, k));
 			legends{end + 1} = sources{k}{2};
 		end
 
-		display.CurrentAxes.Title.String = ['Oscilador Armónico Amortiguado'];
+		display.CurrentAxes.Title.String = ['Oscilador Armonico Amortiguado'];
 		display.CurrentAxes.Title.FontSize = 16;
 		display.CurrentAxes.Title.FontWeight = 'bold';
 		display.CurrentAxes.Title.Color = [0, 0, 0];
@@ -71,7 +69,7 @@
 		display.CurrentAxes.FontSize = 13;
 		display.CurrentAxes.XLim = [0 5];
 		display.CurrentAxes.YLim = [-1 1];
-		display.CurrentAxes.YLabel.String = 'Posición sobre X [m]';
+		display.CurrentAxes.YLabel.String = 'Posicion sobre X [m]';
 		display.CurrentAxes.addprop('Legend');
 		display.CurrentAxes.Legend = legend(legends);
 	end

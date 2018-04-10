@@ -34,28 +34,30 @@
 
 		@Override
 		public List<MassiveParticle> integrate(final double Δt) {
-			final List<Vector> forces = new ArrayList<>();
-			for (int i = 0; i < state.size(); ++i) {
+			final int N = state.size();
+			final List<Vector> forces = new ArrayList<>(N);
+			final List<MassiveParticle> futures = new ArrayList<>(N);
+			final List<MassiveParticle> predicted = new ArrayList<>(N);
+			final List<MassiveParticle> target = force.isVelocityDependent()?
+					futures : predicted;
+			for (int i = 0; i < N; ++i) {
 				final MassiveParticle p = state.get(i);
 				final Vector f = force.apply(state, p);
 				final Vector r = r(Δt, p, f, fOld[i]);
 				forces.add(f);
+				final MassiveParticle pNew = new MassiveParticle(
+						r.getX(), r.getY(), p.getRadius(),
+						p.getVx(), p.getVy(), p.getMass());
+				predicted.add(pNew);
 				if (force.isVelocityDependent()) {
 					final Vector vp = vp(Δt, p, f, fOld[i]);
-					state.set(i, new MassiveParticle(
-							r.getX(), r.getY(), p.getRadius(),
-							vp.getX(), vp.getY(), p.getMass()));
-				}
-				else {
-					state.set(i, new MassiveParticle(
-							r.getX(), r.getY(), p.getRadius(),
-							p.getVx(), p.getVy(), p.getMass()));
+					futures.add(pNew.bounce(vp.getX(), vp.getY()));
 				}
 			}
-			for (int i = 0; i < state.size(); ++i) {
-				final MassiveParticle p = state.get(i);
+			for (int i = 0; i < N; ++i) {
+				final MassiveParticle p = predicted.get(i);
 				final Vector f = forces.get(i);
-				final Vector fNew = force.apply(state, p);
+				final Vector fNew = force.apply(target, target.get(i));
 				final Vector v = v(Δt, p, fNew, f, fOld[i]);
 				fOld[i] = f;
 				state.set(i, p.bounce(v.getX(), v.getY()));

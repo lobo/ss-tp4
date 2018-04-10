@@ -3,6 +3,8 @@
 
 	public class Vector {
 
+		public static final Vector ZERO = Vector.of(0.0, 0.0);
+
 		protected final double x;
 		protected final double y;
 
@@ -23,8 +25,8 @@
 			return y;
 		}
 
-		public Vector dividedBy(final double value) {
-			return Vector.of(x/value, y/value);
+		public Vector add(final Vector vector) {
+			return Vector.of(x + vector.x, y + vector.y);
 		}
 
 		public Vector subtract(final Vector vector) {
@@ -33,5 +35,9 @@
 
 		public Vector multiplyBy(final double value) {
 			return Vector.of(x*value, y*value);
+		}
+
+		public Vector dividedBy(final double value) {
+			return Vector.of(x/value, y/value);
 		}
 	}

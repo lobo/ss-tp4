@@ -30,20 +30,22 @@
 
 		@Override
 		public List<MassiveParticle> integrate(final double Δt) {
-			final List<Vector> forces = new ArrayList<>();
-			for (int i = 0; i < state.size(); ++i) {
+			final int N = state.size();
+			final List<Vector> forces = new ArrayList<>(N);
+			final List<MassiveParticle> predicted = new ArrayList<>(N);
+			for (int i = 0; i < N; ++i) {
 				final MassiveParticle p = state.get(i);
 				final Vector f = force.apply(state, p);
 				final Vector r = r(Δt, p, f);
 				forces.add(f);
-				state.set(i, new MassiveParticle(
+				predicted.add(new MassiveParticle(
 						r.getX(), r.getY(), p.getRadius(),
 						p.getVx(), p.getVy(), p.getMass()));
 			}
-			for (int i = 0; i < state.size(); ++i) {
-				final MassiveParticle p = state.get(i);
+			for (int i = 0; i < N; ++i) {
+				final MassiveParticle p = predicted.get(i);
 				final Vector f = forces.get(i);
-				final Vector fNew = force.apply(state, p);
+				final Vector fNew = force.apply(predicted, p);
 				final Vector v = v(Δt, p, fNew, f);
 				state.set(i, p.bounce(v.getX(), v.getY()));
 			}
