@@ -52,7 +52,6 @@
 				}
 				case "Beeman" : {
 					integrator = BeemanIntegrator.of(force)
-							.velocityDependent(false)
 							.withInitial(state)
 							.build();
 					break;

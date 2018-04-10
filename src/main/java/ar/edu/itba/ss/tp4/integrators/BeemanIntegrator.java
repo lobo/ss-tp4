@@ -14,13 +14,11 @@
 
 		protected final ForceField<MassiveParticle> force;
 		protected final List<MassiveParticle> state;
-		protected final boolean velocityDependent;
 		protected final Vector [] fOld;
 
 		public BeemanIntegrator(final Builder builder) {
 			this.force = builder.force;
 			this.state = builder.state;
-			this.velocityDependent = builder.velocityDependent;
 			this.fOld = new Vector[state.size()];
 			Arrays.setAll(fOld, k -> force.apply(state, state.get(k)));
 		}
@@ -42,7 +40,7 @@
 				final Vector f = force.apply(state, p);
 				final Vector r = r(Δt, p, f, fOld[i]);
 				forces.add(f);
-				if (velocityDependent) {
+				if (force.isVelocityDependent()) {
 					final Vector vp = vp(Δt, p, f, fOld[i]);
 					state.set(i, new MassiveParticle(
 							r.getX(), r.getY(), p.getRadius(),
@@ -68,21 +66,13 @@
 		public static class Builder
 			extends IntegratorBuilder<BeemanIntegrator> {
 
-			protected boolean velocityDependent;
-
 			public Builder(final ForceField<MassiveParticle> force) {
 				super(force);
-				this.velocityDependent = false;
 			}
 
 			@Override
 			public BeemanIntegrator build() {
 				return new BeemanIntegrator(this);
-			}
-
-			public Builder velocityDependent(final boolean dependent) {
-				this.velocityDependent = dependent;
-				return this;
 			}
 		}
 

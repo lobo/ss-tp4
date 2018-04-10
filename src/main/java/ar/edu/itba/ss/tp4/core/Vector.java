@@ -22,4 +22,16 @@
 		public double getY() {
 			return y;
 		}
+
+		public Vector dividedBy(final double value) {
+			return Vector.of(x/value, y/value);
+		}
+
+		public Vector subtract(final Vector vector) {
+			return Vector.of(x - vector.x, y - vector.y);
+		}
+
+		public Vector multiplyBy(final double value) {
+			return Vector.of(x*value, y*value);
+		}
 	}

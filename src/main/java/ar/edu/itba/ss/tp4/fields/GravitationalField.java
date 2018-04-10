@@ -15,4 +15,36 @@
 				final MassiveParticle body) {
 			return Vector.of(0.0, 0.0);
 		}
+
+		@Override
+		public boolean isVelocityDependent() {
+			return false;
+		}
+
+		@Override
+		public Vector derivative1(
+				final List<MassiveParticle> state,
+				final MassiveParticle body) {
+			return Vector.of(
+					0,
+					0.0);
+		}
+
+		@Override
+		public Vector derivative2(
+				final List<MassiveParticle> state,
+				final MassiveParticle body) {
+			return Vector.of(
+					0,
+					0.0);
+		}
+
+		@Override
+		public Vector derivative3(
+				final List<MassiveParticle> state,
+				final MassiveParticle body) {
+			return Vector.of(
+					0,
+					0.0);
+		}
 	}
