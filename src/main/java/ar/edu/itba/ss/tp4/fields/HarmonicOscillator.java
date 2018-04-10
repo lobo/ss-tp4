@@ -12,6 +12,7 @@
 		public static final double k = 10000.0;
 		public static final double m = 70.0;
 		public static final double γ = 100.0;
+		public static final double A = 1.0;
 
 		protected static final double FACTORS [][] = {
 			{-γ,							-k},
@@ -32,6 +33,11 @@
 		@Override
 		public boolean isVelocityDependent() {
 			return true;
+		}
+
+		@Override
+		public boolean isConservative() {
+			return false;
 		}
 
 		@Override
@@ -59,5 +65,17 @@
 			return Vector.of(
 					FACTORS[3][0] * body.getVx() + FACTORS[3][1] * body.getX(),
 					0.0);
+		}
+
+		@Override
+		public double work(final double time) {
+			// Verify!
+			return 0.5 * k * A * A * Math.exp(-time * γ / m);
+		}
+
+		@Override
+		public double potentialEnergy(final MassiveParticle body) {
+			// Verify!
+			return 0.5 * k * (body.getX() * body.getX() + body.getY() * body.getY());
 		}
 	}

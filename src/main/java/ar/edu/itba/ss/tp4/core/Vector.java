@@ -40,4 +40,8 @@
 		public Vector dividedBy(final double value) {
 			return Vector.of(x/value, y/value);
 		}
+
+		public Vector power(final double exponent) {
+			return Vector.of(Math.pow(x, exponent), Math.pow(y, exponent));
+		}
 	}

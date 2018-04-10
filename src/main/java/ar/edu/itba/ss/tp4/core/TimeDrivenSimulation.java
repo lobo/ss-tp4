@@ -31,13 +31,18 @@
 
 		public TimeDrivenSimulation run() {
 			System.out.println("Running...");
+			/*System.out.println(
+				"Energy Release (t = 0.0): " + integrator.getEnergyRelease(0.0));*/
 			final long startTime = System.nanoTime();
 			spy.accept(0.0, integrator.getState());
 			LongStream.rangeClosed(1, Math.round(maxTime/Δt))
 				.mapToDouble(k -> k * Δt)
 				.forEachOrdered(time -> {
 					spy.accept(time, integrator.integrate(Δt));
-					System.out.print("\t\tTime reached: " + time + "\r");
+					System.out.print("\t\tTime reached: " + time + " [s]\n");
+					/*System.out.println(
+						"\t\tEnergy Release: " +
+						integrator.getEnergyRelease(time) + " [J]\r");*/
 				});
 			System.out.println(
 					"\n\n\tEnd simulation in " +

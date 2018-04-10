@@ -27,6 +27,11 @@
 		}
 
 		@Override
+		public boolean isConservative() {
+			return true;
+		}
+
+		@Override
 		public Vector derivative1(
 				final List<MassiveParticle> state,
 				final MassiveParticle body) {
@@ -45,6 +50,38 @@
 				final List<MassiveParticle> state,
 				final MassiveParticle body) {
 			return Vector.ZERO;
+		}
+
+		@Override
+		public double work(final double time) {
+			return 0.0;
+		}
+
+		@Override
+		public double potentialEnergy(final MassiveParticle body) {
+			return 0.0;
+		}
+
+		@Override
+		public double potentialEnergy(final List<MassiveParticle> state) {
+			// Verify!
+			return state.stream()
+					.mapToDouble(p1 -> {
+						return state.stream()
+							.filter(p2 -> p1 != p2)
+							.mapToDouble(p2 -> potential(p1, p2))
+							.reduce(0.0, (U1, U2) -> U1 + U2);
+					})
+					.reduce(0.0, (U1, U2) -> U1 + U2);
+		}
+
+		protected double potential(
+				final MassiveParticle p1, final MassiveParticle p2) {
+			// Verify!
+			final double Δx = p2.getX() - p1.getX();
+			final double Δy = p2.getY() - p1.getY();
+			final double r = Math.hypot(Δx, Δy);
+			return -G * p1.getMass() * p2.getMass() / r;
 		}
 
 		protected Vector attraction(

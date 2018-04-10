@@ -12,8 +12,8 @@
 	public class GearIntegrator implements Integrator<MassiveParticle> {
 
 		protected static final double α [][] = {
-			{3.0/20.0, 19.0/90.0},		// α0
-			{251.0/360.0, 3.0/16.0}		// α1
+			{3.0/20.0, 3.0/16.0},		// α0
+			{251.0/360.0, 251.0/360.0}	// α1
 		};
 
 		protected final ForceField<MassiveParticle> force;
@@ -31,6 +31,11 @@
 		@Override
 		public List<MassiveParticle> getState() {
 			return state;
+		}
+
+		@Override
+		public ForceField<MassiveParticle> getForceField() {
+			return force;
 		}
 
 		@Override
@@ -59,20 +64,12 @@
 				final Vector r2p = accelerations.get(i);
 				final Vector r2New = force.apply(predicted, p).dividedBy(p.getMass());
 				final Vector ΔR2 = r2New.subtract(r2p).multiplyBy(0.5*Δt*Δt);
-				if (force.isVelocityDependent()) {
-					state.set(i, new MassiveParticle(
-							p.getX() + α[0][1]*ΔR2.getX()/Δt, p.getY() + α[0][1]*ΔR2.getY()/Δt,
-							p.getRadius(),
-							p.getVx() + α[1][1]*ΔR2.getX()/Δt, p.getVx() + α[1][1]*ΔR2.getY()/Δt,
-							p.getMass()));
-				}
-				else {
-					state.set(i, new MassiveParticle(
-							p.getX() + α[0][0]*ΔR2.getX()/Δt, p.getY() + α[0][0]*ΔR2.getY()/Δt,
-							p.getRadius(),
-							p.getVx() + α[1][0]*ΔR2.getX()/Δt, p.getVx() + α[1][0]*ΔR2.getY()/Δt,
-							p.getMass()));
-				}
+				final int factor = force.isVelocityDependent()? 1 : 0;
+				state.set(i, new MassiveParticle(
+					p.getX() + α[0][factor]*ΔR2.getX(), p.getY() + α[0][factor]*ΔR2.getY(),
+					p.getRadius(),
+					p.getVx() + α[1][factor]*ΔR2.getX()/Δt, p.getVy() + α[1][factor]*ΔR2.getY()/Δt,
+					p.getMass()));
 			}
 			return state;
 		}

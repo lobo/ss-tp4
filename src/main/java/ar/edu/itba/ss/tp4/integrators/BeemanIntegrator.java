@@ -33,6 +33,11 @@
 		}
 
 		@Override
+		public ForceField<MassiveParticle> getForceField() {
+			return force;
+		}
+
+		@Override
 		public List<MassiveParticle> integrate(final double Δt) {
 			final int N = state.size();
 			final List<Vector> forces = new ArrayList<>(N);

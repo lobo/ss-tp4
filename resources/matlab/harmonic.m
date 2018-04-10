@@ -45,15 +45,22 @@
 
 		time = 0.0:step:5.0;
 		realX = exp(-10.0 .* time / 14.0) .* cos(time .* sqrt(1000.0/7.0 - 100.0/196.0));
+		realX = realX';
+
+		% Error Cuadrático Medio:
+		errors = [];
+		for k = 1:size(x, 2)
+			errors(1, k) = immse(realX, x(:, k));
+		end
 
 		legends = {'Solucion Analitica'};
 		plot(time, realX);
 		for k = 1:size(x, 2)
 			plot(time, x(:, k));
-			legends{end + 1} = sources{k}{2};
+			legends{end + 1} = [sources{k}{2}, ' (MSE = ', num2str(errors(1, k), '%.4e'), ' [m^2])'];
 		end
 
-		display.CurrentAxes.Title.String = ['Oscilador Armonico Amortiguado'];
+		display.CurrentAxes.Title.String = ['Oscilador Armonico Amortiguado (\Deltat = ', num2str(step), ' [s])'];
 		display.CurrentAxes.Title.FontSize = 16;
 		display.CurrentAxes.Title.FontWeight = 'bold';
 		display.CurrentAxes.Title.Color = [0, 0, 0];
@@ -72,4 +79,5 @@
 		display.CurrentAxes.YLabel.String = 'Posicion sobre X [m]';
 		display.CurrentAxes.addprop('Legend');
 		display.CurrentAxes.Legend = legend(legends);
+		%display.CurrentAxes.Legend.Position(3) = 0.4;
 	end
