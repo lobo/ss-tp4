@@ -11,7 +11,7 @@
 		public ForceField<T> getForceField();
 		public List<T> integrate(final double Δt);
 
-		public default double getEnergyRelease(final double time) {
-			return getForceField().energyRelease(getState(), time);
+		public default double getEnergy(final double time) {
+			return getForceField().energy(getState(), time);
 		}
 	}

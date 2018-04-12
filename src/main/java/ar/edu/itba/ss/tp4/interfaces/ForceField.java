@@ -17,7 +17,7 @@
 		public Vector derivative2(final List<T> state, final T body);
 		public Vector derivative3(final List<T> state, final T body);
 
-		public double work(final double time);
+		public double energyLoss(final double time);
 		public double potentialEnergy(final T body);
 
 		public default double kineticEnergy(final T body) {
@@ -45,9 +45,8 @@
 			return kineticEnergy(state) + potentialEnergy(state);
 		}
 
-		public default double energyRelease(
+		public default double energy(
 				final List<T> state, final double time) {
-			// Verify!
-			return mechanicalEnergy(state) - work(time);
+			return mechanicalEnergy(state) + energyLoss(time);
 		}
 	}

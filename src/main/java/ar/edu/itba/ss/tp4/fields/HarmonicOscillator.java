@@ -14,6 +14,16 @@
 		public static final double γ = 100.0;
 		public static final double A = 1.0;
 
+		public final double E0;
+		public final double ω;
+		public final double ϕ;
+
+		public HarmonicOscillator() {
+			this.E0 = energyLoss(0.0);
+			this.ω = Math.sqrt(k / m - γ * γ / (4.0 * m * m));
+			this.ϕ = Math.atan(2.0 * ω * m / γ);
+		}
+
 		protected static final double FACTORS [][] = {
 			{-γ,							-k},
 			{γ*γ - k,						k*γ},
@@ -68,14 +78,13 @@
 		}
 
 		@Override
-		public double work(final double time) {
-			// Verify!
-			return 0.5 * k * A * A * Math.exp(-time * γ / m);
+		public double energyLoss(final double time) {
+			return E0 - 0.5 * k * A * A * Math.exp(-time * γ / m)
+				* (1.0 + (0.5 * γ / Math.sqrt(k * m)) * Math.cos(2.0 * ω * time - ϕ));
 		}
 
 		@Override
 		public double potentialEnergy(final MassiveParticle body) {
-			// Verify!
 			return 0.5 * k * (body.getX() * body.getX() + body.getY() * body.getY());
 		}
 	}
