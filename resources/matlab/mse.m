@@ -5,25 +5,12 @@
 		for k = 1:size(sources, 2)
 			file = fopen(sources{k}{1}, 'r');
 			disp(['Reading ', sources{k}{1}, ' ...']);
-
-			temp = [];
-			N = str2num(fgetl(file));
-			while true
-				time = fgetl(file);
-				if time == -1
-					break;
-				end
-				xyrvv = str2num(fgetl(file));
-				temp(end + 1, 1) = xyrvv(1, 1);
-				fgetl(file);
-			end
-			fclose(file);
-			x(:, k) = temp;
+			xyrvv = importdata(sources{k}{1});
+			x(:, k) = xyrvv(:, 1);
 		end
 
-		time = 0.0:step:5.0;
+		time = (0.0:step:5.0)';
 		realX = exp(-10.0 .* time / 14.0) .* cos(time .* sqrt(1000.0/7.0 - 100.0/196.0));
-		realX = realX';
 
 		% Error Cuadrático Medio:
 		errors = [];
