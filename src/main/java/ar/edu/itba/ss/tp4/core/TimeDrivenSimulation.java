@@ -19,8 +19,10 @@
 			System.out.println(
 				"Time-Driven Simulation (T-max = " + builder.maxTime +
 				" [s], Time Step = " + builder.Δt + " [s])");
-			System.out.println(
-				"Integrator: " + builder.integrator.getClass().getSimpleName());
+			System.out.println("Integrator: " + builder.integrator
+				.getClass().getSimpleName());
+			System.out.println("Force Field: " + builder.integrator
+				.getForceField().getClass().getSimpleName());
 			this.integrator = builder.integrator;
 			this.spy = builder.spy;
 			this.maxTime = builder.maxTime;
