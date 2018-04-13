@@ -26,7 +26,7 @@ Or do it manually, if you prefer.
 In the root folder (after build):
 
 ```
-$ java -jar target/tp4-1.0-SNAPSHOT.jar <arguments>
+$ java -jar target/tp4-1.0-SNAPSHOT.jar <simulate | animate>
 ```
 
 ## Help
@@ -41,12 +41,12 @@ Receives a JSON file with the following format (see example below):
 
 ```json
 {
-	"fps"			: "60.0",
-	"deltat"			: "20000",
-	"integrator"		: "60.0",
-	"system"			: "HarmonicOscillator",
-	"outputfile"		: "output.txt",
-	"maxtime"		: "123123",
+	"fps"			: "40",
+	"deltat"		: "0.000001",
+	"integrator"	: "Beeman",
+	"system"		: "HarmonicOscillator",
+	"output"		: "resources/data/hm-beeman.data",
+	"maxtime"		: "5.0"
 }
 ```
 
@@ -55,8 +55,6 @@ Receives a JSON file with the following format (see example below):
 ### Simulation file
 
 ```
-<N>
-<t0>
 <x> <y> <r> <vx> <vy>
 ...
 ```
@@ -84,7 +82,3 @@ This project has been built, designed and maintained by the following authors:
 
 * [Daniel Lobo](https://github.com/lobo)
 * [Agustín Golmar](https://github.com/agustin-golmar)
-
-## Bibliography
-
-__"Title."__ Authors. _Where & When._

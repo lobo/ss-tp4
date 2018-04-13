@@ -58,6 +58,7 @@
 				}
 				case "Gear" : {
 					integrator = GearIntegrator.of(force)
+							.Δt(config.getDeltat())
 							.withInitial(state)
 							.build();
 					break;
@@ -119,10 +120,11 @@
 		}
 		
 		private static List<MassiveParticle> generateParticles() {
-			List<MassiveParticle> particles = new ArrayList<MassiveParticle>();
+			final List<MassiveParticle> particles = new ArrayList<>();
 			
-			particles.add(new MassiveParticle(0, 0, 6.955 * Math.pow(10, 5) * 1000, 0, 0, 1.988544 * Math.pow(10, 30))); // Sun
+			// Siempre primero!
 			particles.add(new MassiveParticle(0, 0, 3.7, 0, 0, 751));     							// Voyager - COMPLETAR X Y VX VY
+			particles.add(new MassiveParticle(0, 0, 6.955 * Math.pow(10, 5) * 1000, 0, 0, 1.988544 * Math.pow(10, 30))); // Sun
 			
 			particles.add(new MassiveParticle(4.934575904901209E+10, -3.332189926157666E+10, 2440 * 1000, 1.768273057783463E+04, 4.262789135023012E+04, 3.302 * Math.pow(10, 26)));  // Mercury
 			particles.add(new MassiveParticle(3.343420365750898E+10, 1.025157427442533E+11, 6051.8 * 1000, -3.341288489965073E+04, 1.069158573237753E+04, 48.685 * Math.pow(10, 23))); 	// Venus
