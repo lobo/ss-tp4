@@ -110,6 +110,8 @@
 				output.write(tenParticles, time);
 				time += deltat;
 			}
+			
+			System.out.println("The animated file has been saved in: " + filepath + ".xyz");
 						
 		}
 

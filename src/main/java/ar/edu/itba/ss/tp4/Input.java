@@ -24,8 +24,6 @@ public class Input{
 			try {
 				Scanner dynamicRead = new Scanner(dynamicFile);
 				
-				dynamicRead.next(); // avoid t0 in Dynamic File
-			
 				while(dynamicRead.hasNext()){
 					particles.add(new MassiveParticle(
 							Double.parseDouble(dynamicRead.next()), // x
