@@ -69,18 +69,6 @@
 			final List<MassiveParticle> predicted = new ArrayList<>(N);
 			for (int i = 0; i < N; ++i) {
 				final MassiveParticle p = state.get(i);
-				final Vector r0 = derivatives[i][0];
-				final Vector r1 = derivatives[i][1];
-				final Vector r2 = derivatives[i][2];
-				final Vector r3 = derivatives[i][3];
-				final Vector r4 = derivatives[i][4];
-				final Vector r5 = derivatives[i][5];
-				derivatives[i][0] = r0p(r0, r1, r2, r3, r4, r5);
-				derivatives[i][1] = r1p(r1, r2, r3, r4, r5);
-				derivatives[i][2] = r2p(r2, r3, r4, r5);
-				derivatives[i][3] = r3p(r3, r4, r5);
-				derivatives[i][4] = r4p(r4, r5);
-				derivatives[i][5] = r5p(r5);
 				predicted.add(new MassiveParticle(
 						derivatives[i][0].getX(), derivatives[i][0].getY(), p.getRadius(),
 						derivatives[i][1].getX(), derivatives[i][1].getY(), p.getMass()));
@@ -91,17 +79,21 @@
 				final Vector r2New = force.apply(predicted, p).dividedBy(p.getMass());
 				final Vector ΔR2 = r2New.subtract(r2p).multiplyBy(Δ[1]);
 				final int factor = force.isVelocityDependent()? 1 : 0;
-				derivatives[i][0] = derivatives[i][0].add(ΔR2.multiplyBy(α[0][factor]));
-				derivatives[i][1] = derivatives[i][1].add(ΔR2.multiplyBy(α[1][factor] / Δ[0]));
-				derivatives[i][2] = derivatives[i][2].add(ΔR2.multiplyBy(α[2][factor] / Δ[1]));
-				derivatives[i][3] = derivatives[i][3].add(ΔR2.multiplyBy(α[3][factor] / Δ[2]));
-				derivatives[i][4] = derivatives[i][4].add(ΔR2.multiplyBy(α[4][factor] / Δ[3]));
-				derivatives[i][5] = derivatives[i][5].add(ΔR2.multiplyBy(α[5][factor] / Δ[4]));
+				final Vector r0 = derivatives[i][0].add(ΔR2.multiplyBy(α[0][factor]));
+				final Vector r1 = derivatives[i][1].add(ΔR2.multiplyBy(α[1][factor] / Δ[0]));
+				final Vector r2 = derivatives[i][2].add(ΔR2.multiplyBy(α[2][factor] / Δ[1]));
+				final Vector r3 = derivatives[i][3].add(ΔR2.multiplyBy(α[3][factor] / Δ[2]));
+				final Vector r4 = derivatives[i][4].add(ΔR2.multiplyBy(α[4][factor] / Δ[3]));
+				final Vector r5 = derivatives[i][5].add(ΔR2.multiplyBy(α[5][factor] / Δ[4]));
 				state.set(i, new MassiveParticle(
-					derivatives[i][0].getX(), derivatives[i][0].getY(),
-					p.getRadius(),
-					derivatives[i][1].getX(), derivatives[i][1].getY(),
-					p.getMass()));
+						r0.getX(), r0.getY(), p.getRadius(),
+						r1.getX(), r1.getY(), p.getMass()));
+				derivatives[i][0] = r0p(r0, r1, r2, r3, r4, r5);
+				derivatives[i][1] = r1p(r1, r2, r3, r4, r5);
+				derivatives[i][2] = r2p(r2, r3, r4, r5);
+				derivatives[i][3] = r3p(r3, r4, r5);
+				derivatives[i][4] = r4p(r4, r5);
+				derivatives[i][5] = r5p(r5);
 			}
 			return state;
 		}
