@@ -1,7 +1,11 @@
 
 	package ar.edu.itba.ss.tp4;
 
+	import java.io.File;
+	import java.io.FileNotFoundException;
+	import java.io.FileOutputStream;
 	import java.io.IOException;
+	import java.io.PrintStream;
 	import java.util.ArrayList;
 	import java.util.List;
 
@@ -17,7 +21,6 @@
 	import ar.edu.itba.ss.tp4.interfaces.ForceField;
 	import ar.edu.itba.ss.tp4.interfaces.Integrator;
 	import ar.edu.itba.ss.tp4.Configurator;
-	import ar.edu.itba.ss.tp4.Output;
 	import ar.edu.itba.ss.tp3.core.MassiveParticle;
 
 	/**
@@ -34,7 +37,7 @@
 			final Configurator configurator = new Configurator();
 			configurator.load();
 			final Configuration config = configurator.getConfiguration();
-			final Output output = Output.getInstace(config.getOutput());
+			final OutputSimulationFile output = OutputSimulationFile.getInstace(config.getOutput());
 			final ForceField<MassiveParticle> force = mode.equals("HarmonicOscillator")?
 					new HarmonicOscillator() :
 					new GravitationalField();
@@ -79,10 +82,37 @@
 
 			output.close();
 		}
+		
 
-		protected static void animateMode() {
+
+		protected static void animateMode(final String mode) throws JsonParseException, JsonMappingException, IOException {
 			System.out.println("A time-driven animation...");
 			// Acá usás FPS...
+			
+			final Configurator configurator = new Configurator();
+			configurator.load();
+			final Configuration config = configurator.getConfiguration();
+			
+			final String filepath = config.getOutput(); // where I read the simulate file
+			Input input = new Input(filepath);
+			
+			List<MassiveParticle> allParticles = input.getParticles();
+			final Double deltat = config.getDeltat();
+			
+			OutputAnimatedFile output = OutputAnimatedFile.getInstance(filepath + ".xyz");
+			double time = 0.0;
+			
+			for (int i = 0; i < allParticles.size() / 10; i++) {
+				List<MassiveParticle> tenParticles = new ArrayList<>();
+				for (int j = 0; j < 10; j++) {
+					tenParticles.add(allParticles.get(i * 10 + j));
+				}
+				output.write(tenParticles, time);
+				time += deltat;
+			}
+			
+			System.out.println("The animated file has been saved in: " + filepath + ".xyz");
+						
 		}
 
 		public static void main(final String [] arguments)
@@ -110,7 +140,7 @@
 					simulateMode(system);
 					break;
 				case "animate":
-					animateMode();
+					animateMode(system);
 					break;
 				default:
 					System.out.println("[FAIL] - Invalid argument. Try 'help' for more information.");
@@ -121,15 +151,25 @@
 		
 		private static List<MassiveParticle> generateParticles() {
 			final List<MassiveParticle> particles = new ArrayList<>();
+			final Double voyagerDistanceFromEarth = 1500000.00; // un millón quinientos mil metros
+			final Double earthRadius = 6371.01 * 1000;
+			final Double earthPosX = 1.407128872765628E+11;
+			final Double earthPosY = -5.468366774055181E+10;
+			final Double alpha = Math.atan2(earthPosX, earthPosY);
+			final Double voyagerVx = 11000 * Math.sin(alpha);
+			final Double voyagerVy = 11000 * Math.cos(alpha);
+			final Double voyagerX =  earthPosX + (earthRadius + voyagerDistanceFromEarth) * Math.cos(alpha);
+			final Double voyagerY =  earthPosY + (earthRadius + voyagerDistanceFromEarth) * Math.sin(alpha); 
+			final Double voyagerMass = 751.00; //kg
 			
 			// Siempre primero!
-			particles.add(new MassiveParticle(0, 0, 3.7, 0, 0, 751));     							// Voyager - COMPLETAR X Y VX VY
+			particles.add(new MassiveParticle(voyagerX, voyagerY, 3.7, voyagerVx, voyagerVy, voyagerMass));	// Voyager
 			particles.add(new MassiveParticle(0, 0, 6.955 * Math.pow(10, 5) * 1000, 0, 0, 1.988544 * Math.pow(10, 30))); // Sun
 			
 			particles.add(new MassiveParticle(4.934575904901209E+10, -3.332189926157666E+10, 2440 * 1000, 1.768273057783463E+04, 4.262789135023012E+04, 3.302 * Math.pow(10, 26)));  // Mercury
 			particles.add(new MassiveParticle(3.343420365750898E+10, 1.025157427442533E+11, 6051.8 * 1000, -3.341288489965073E+04, 1.069158573237753E+04, 48.685 * Math.pow(10, 23))); 	// Venus
 
-			particles.add(new MassiveParticle(1.407128872765628E+11, -5.468366774055181E+10, 6371.01 * 1000, 1.030842712511233E+04, 2.764345679083411E+04, 5.97219 * Math.pow(10, 24)));     // Earth
+			particles.add(new MassiveParticle(1.407128872765628E+11, -5.468366774055181E+10, earthRadius, 1.030842712511233E+04, 2.764345679083411E+04, 5.97219 * Math.pow(10, 24)));     // Earth
 			particles.add(new MassiveParticle(1.395051878512483E+11, 1.708511937435906E+11, 3389 * 1000, -1.784109781473363E+04, 1.738371048843349E+04, 6.4185 * Math.pow(10, 23)));     // Mars
 			
 			particles.add(new MassiveParticle(1.103684896887148E+11, 7.543016811214004E+11, 71492 * 1000, -1.309352942244424E+04, 2.503650206820343E+03, 1898.13 * Math.pow(10, 24)));     // Jupiter

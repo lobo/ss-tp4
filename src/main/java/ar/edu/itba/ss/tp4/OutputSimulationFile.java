@@ -8,18 +8,18 @@ import java.util.List;
 
 import ar.edu.itba.ss.tp3.core.MassiveParticle;
 
-public class Output {
+public class OutputSimulationFile {
 
-	private static Output instance = null;
+	private static OutputSimulationFile instance = null;
 	private static PrintWriter pw = null;
 
-	private Output(PrintWriter printWriter) {
+	private OutputSimulationFile(PrintWriter printWriter) {
 		pw = printWriter;
 	}
 
-	public static Output getInstace(final String output) throws IOException {
+	public static OutputSimulationFile getInstace(final String output) throws IOException {
 		if(instance == null)
-			instance = new Output(new PrintWriter(new BufferedWriter(new FileWriter(output, false))));
+			instance = new OutputSimulationFile(new PrintWriter(new BufferedWriter(new FileWriter(output, false))));
 		return instance;
 	}
 
