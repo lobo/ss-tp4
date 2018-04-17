@@ -1,7 +1,11 @@
 
 	package ar.edu.itba.ss.tp4;
 
+	import java.io.File;
+	import java.io.FileNotFoundException;
+	import java.io.FileOutputStream;
 	import java.io.IOException;
+	import java.io.PrintStream;
 	import java.util.ArrayList;
 	import java.util.List;
 
@@ -17,7 +21,6 @@
 	import ar.edu.itba.ss.tp4.interfaces.ForceField;
 	import ar.edu.itba.ss.tp4.interfaces.Integrator;
 	import ar.edu.itba.ss.tp4.Configurator;
-	import ar.edu.itba.ss.tp4.Output;
 	import ar.edu.itba.ss.tp3.core.MassiveParticle;
 
 	/**
@@ -34,7 +37,7 @@
 			final Configurator configurator = new Configurator();
 			configurator.load();
 			final Configuration config = configurator.getConfiguration();
-			final Output output = Output.getInstace(config.getOutput());
+			final OutputSimulationFile output = OutputSimulationFile.getInstace(config.getOutput());
 			final ForceField<MassiveParticle> force = mode.equals("HarmonicOscillator")?
 					new HarmonicOscillator() :
 					new GravitationalField();
@@ -79,10 +82,35 @@
 
 			output.close();
 		}
+		
 
-		protected static void animateMode() {
+
+		protected static void animateMode(final String mode) throws JsonParseException, JsonMappingException, IOException {
 			System.out.println("A time-driven animation...");
 			// Acá usás FPS...
+			
+			final Configurator configurator = new Configurator();
+			configurator.load();
+			final Configuration config = configurator.getConfiguration();
+			
+			final String filepath = config.getOutput(); // where I read the simulate file
+			Input input = new Input(filepath);
+			
+			List<MassiveParticle> allParticles = input.getParticles();
+			final Double deltat = config.getDeltat();
+			
+			OutputAnimatedFile output = OutputAnimatedFile.getInstance(filepath + ".xyz");
+			double time = 0.0;
+			
+			for (int i = 0; i < allParticles.size() / 10; i++) {
+				List<MassiveParticle> tenParticles = new ArrayList<>();
+				for (int j = 0; j < 10; j++) {
+					tenParticles.add(allParticles.get(i * 10 + j));
+				}
+				output.write(tenParticles, time);
+				time += deltat;
+			}
+						
 		}
 
 		public static void main(final String [] arguments)
@@ -110,7 +138,7 @@
 					simulateMode(system);
 					break;
 				case "animate":
-					animateMode();
+					animateMode(system);
 					break;
 				default:
 					System.out.println("[FAIL] - Invalid argument. Try 'help' for more information.");
@@ -132,9 +160,8 @@
 			final Double voyagerY =  earthPosY + (earthRadius + voyagerDistanceFromEarth) * Math.sin(alpha); 
 			final Double voyagerMass = 751.00; //kg
 			
-			
 			// Siempre primero!
-			particles.add(new MassiveParticle(voyagerX, voyagerY, 3.7, voyagerVx, voyagerVy, voyagerMass));	// Voyager - COMPLETAR X Y VX VY
+			particles.add(new MassiveParticle(voyagerX, voyagerY, 3.7, voyagerVx, voyagerVy, voyagerMass));	// Voyager
 			particles.add(new MassiveParticle(0, 0, 6.955 * Math.pow(10, 5) * 1000, 0, 0, 1.988544 * Math.pow(10, 30))); // Sun
 			
 			particles.add(new MassiveParticle(4.934575904901209E+10, -3.332189926157666E+10, 2440 * 1000, 1.768273057783463E+04, 4.262789135023012E+04, 3.302 * Math.pow(10, 26)));  // Mercury
