@@ -24,14 +24,14 @@
 		secondsByDay = 3600.0 * 24.0;
 
 		body = {
-			'Voyager-1',
-			'Sun',
-			'Mercury',
-			'Venus',
-			'Earth',
-			'Mars',
-			'Jupiter',
-			'Saturn'
+			'Voyager-1',	% 0
+			'Sun',			% 1
+			'Mercury',		% 2
+			'Venus',		% 3
+			'Earth',		% 4
+			'Mars',			% 5
+			'Jupiter',		% 6
+			'Saturn'		% 7
 			%'Uranus',
 			%'Neptune'
 		};
@@ -46,6 +46,7 @@
 		Pt = sqrt(Pt(:, 1) + Pt(:, 2)) / AU;
 
 		[minPt, index] = min(Pt, [], 1);
+		mint = time(index, 1) / secondsByDay;
 
 		% Begin plotting...
 
@@ -56,7 +57,7 @@
 		hold on;
 
 		plot(time ./ secondsByDay, Pt(:, 1));
-		scatter(time(index, 1) / secondsByDay, minPt, 100, 'o', 'filled');
+		scatter(mint, minPt, 100, 'o', 'filled');
 
 		display.CurrentAxes.Title.String = ['Voyager-1: Distance to ', body{target + 1}, ' (\Deltat = ', num2str(step), ' [s])'];
 		display.CurrentAxes.Title.FontSize = 16;
@@ -78,7 +79,7 @@
 		display.CurrentAxes.addprop('Legend');
 		display.CurrentAxes.Legend = legend({
 			'Distance [AU]',
-			['Minimum: ', num2str(minPt, '%.4e'), ' [AU]']
+			['Minimum: ', num2str(minPt, '%.4e'), ' [AU] (', num2str(mint), ' [days])']
 		});
 		display.CurrentAxes.Legend.Location = 'southeast';
 	end

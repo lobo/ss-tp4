@@ -24,7 +24,7 @@ public class OutputAnimatedFile {
 	}
 
 	public void write(List<MassiveParticle> list, double time){
-		pw.write(String.valueOf(6) + "\n");
+		pw.write(String.valueOf(list.size()) + "\n");
 		pw.write(String.valueOf(time) + "\n");
 		
 		for(MassiveParticle p: list){

@@ -44,4 +44,16 @@
 		public Vector power(final double exponent) {
 			return Vector.of(Math.pow(x, exponent), Math.pow(y, exponent));
 		}
+
+		public Vector versor() {
+			return Vector.of(x, y).dividedBy(magnitude());
+		}
+
+		public double magnitude() {
+			return Math.hypot(x, y);
+		}
+
+		public Vector tangent() {
+			return Vector.of(y, -x);
+		}
 	}
