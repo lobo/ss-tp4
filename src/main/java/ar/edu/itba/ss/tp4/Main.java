@@ -157,7 +157,8 @@
 			final Double earthRadius = 6371.01 * 1000;
 			final Double earthPosX = 1.407128872765628E+11;
 			final Double earthPosY = -5.468366774055181E+10;
-			final Double alpha = Math.atan2(earthPosX, earthPosY);
+			
+			final Double alpha = Math.atan2(earthPosY, earthPosX);
 			final Double voyagerVx = 11000 * Math.sin(alpha);
 			final Double voyagerVy = 11000 * Math.cos(alpha);
 			final Double voyagerX =  earthPosX + (earthRadius + voyagerDistanceFromEarth) * Math.cos(alpha);
