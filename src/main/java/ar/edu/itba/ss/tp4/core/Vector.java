@@ -33,6 +33,17 @@
 			return Vector.of(x - vector.x, y - vector.y);
 		}
 
+		public double dot(final Vector vector) {
+			return x * vector.x + y * vector.y;
+		}
+
+		public Vector over(final Vector vector) {
+			final double m1 = magnitude();
+			final double m2 = vector.magnitude();
+			final double cosα = dot(vector) / (m1 * m2);
+			return vector.versor().multiplyBy(m1 * cosα);
+		}
+
 		public Vector multiplyBy(final double value) {
 			return Vector.of(x*value, y*value);
 		}

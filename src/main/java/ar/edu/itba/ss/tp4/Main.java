@@ -90,7 +90,7 @@
 			configurator.load();
 			final Configuration config = configurator.getConfiguration();
 			
-			final int N = 5;
+			final int N = generateParticles().size();
 			
 			final String filepath = config.getOutput(); // where I read the simulate file
 			Input input = new Input(filepath);
@@ -150,35 +150,44 @@
 
 		private static List<MassiveParticle> generateParticles() {
 
-			// Voyager-1 properties:
+			// Earth properties:
 			final double Re = 6371000.0;
 			final Vector earth = Vector.of(1.439499338063904E+11, -4.501039010586976E+10);
+			final Vector Ve = Vector.of(8.415311788888911E+3, 2.831597743867901E+4);
+
+			// Voyager-1 properties:
 			final Vector voyager = earth.versor().multiplyBy(earth.magnitude() + Re + 1500000.0);
-			final Vector Vv = voyager.versor().tangent().multiplyBy(-11000.0);
+			final Vector Vvv = earth.versor().tangent().multiplyBy(-1);
+			final Vector Vv = Vvv.multiplyBy(11000.0);
+
+			System.out.println("Ve  = " + Ve.getX() + " -> " + Ve.getY());
+			System.out.println("Vvv = " + Vvv.getX() + " -> " + Vvv.getY());
+			System.out.println("Vv  = " + Vv.getX() + " -> " + Vv.getY());
+
 			final double voyagerMass = 751.0;
 
 			// Bodies:
 			final double [][] bodies = {
-									{voyager.getX(), voyager.getY(), 1.0, Vv.getX(), Vv.getY(), voyagerMass},
-									{0.0, 0.0, 6.963E+8, 0.0, 0.0, 1.988544E+30},
-									//{5.347050011076978E+10, -1.749871636534829E+10, 2440E+3, 5.681537103747067E+3, 4.849978521587917E+4, 3.302E+23},
-									//{2.169979322974804E+10, 1.055552194021935E+11, 6051.8E+3, -3.442327831494310+4, 6.878211961227505, 4.8685E+24},
-									{earth.getX(), earth.getY(), Re, 8.415311788888911E+3, 2.831597743867901E+4, 5.97219E+24},
-									//{1.332381415231438E+11, 1.767318038780731E+11, 3389E+3, -1.842109512919714E+4, 1.664469813414635E+4, 6.4185E+23},
-									{1.058409319749973E+11, 7.551533616543298E+11, 71492E+3, -1.310553498751214E+4, 2.424702557330317E+3, 1.89813E+24},
-									{-1.075592980165280E+12, 8.544801191238763E+11, 60268E+3, -6.541480412587013E+3, -7.590568168145934E+3, 5.68319E+26}
-								};
+				{voyager.getX(), voyager.getY(), 1.0, Vv.getX(), Vv.getY(), voyagerMass},
+				{0.0, 0.0, 6.963E+8, 0.0, 0.0, 1.988544E+30},
+				//{5.347050011076978E+10, -1.749871636534829E+10, 2440E+3, 5.681537103747067E+3, 4.849978521587917E+4, 3.302E+23},
+				//{2.169979322974804E+10, 1.055552194021935E+11, 6051.8E+3, -3.442327831494310+4, 6.878211961227505, 4.8685E+24},
+				{earth.getX(), earth.getY(), Re, Ve.getX(), Ve.getY(), 5.97219E+24},
+				{1.332381415231438E+11, 1.767318038780731E+11, 3389E+3, -1.842109512919714E+4, 1.664469813414635E+4, 6.4185E+23},
+				{1.058409319749973E+11, 7.551533616543298E+11, 71492E+3, -1.310553498751214E+4, 2.424702557330317E+3, 1898.13E+24},
+				{-1.075592980165280E+12, 8.544801191238763E+11, 60268E+3, -6.541480412587013E+3, -7.590568168145934E+3, 5.68319E+26}
+			};
 
 			// Para escalar el radio en Ovito:
 			final double [] scaleFactor = {
-				150000000.0,		// Voyager-1
-				50.0,		// Sun
-				//800.0,		// Mercury
-				//550.0,		// Venus
-				550.0,		// Earth
-				//500.0,		// Mars
-				500.0,		// Jupiter
-				500.0		// Saturn
+				1500.0,		// Voyager-1
+				1.0,		// Sun
+				//800.0,	// Mercury
+				//550.0,	// Venus
+				1.0,		// Earth
+				1.0,		// Mars
+				1.0,		// Jupiter
+				1.0			// Saturn
 			};
 
 			final List<MassiveParticle> particles = new ArrayList<>();
