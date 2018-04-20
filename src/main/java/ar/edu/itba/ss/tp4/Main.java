@@ -156,13 +156,21 @@
 			final Vector Ve = Vector.of(8.415311788888911E+3, 2.831597743867901E+4);
 
 			// Voyager-1 properties:
-			final Vector voyager = earth.versor().multiplyBy(earth.magnitude() + Re + 1500000.0);
-			final Vector Vvv = earth.versor().tangent().multiplyBy(-1);
-			final Vector Vv = Vvv.multiplyBy(11000.0);
+			//System.out.println(earth.versor().magnitude());
 
+			final Vector voyager = earth.versor().multiplyBy(earth.magnitude() + Re + 1500000.0);
+			final Vector Vt = voyager.versor().tangent().multiplyBy(-1.0);
+			final Vector Vn = Vt.tangent().multiplyBy(-1.0);
+			final Vector Vv = Vt.multiplyBy(11000.0).add(Ve.over(Vt)).subtract(Ve.over(Vn));
+
+			/*System.out.println("Orthogonal?: " + Vn.dot(Vt));
+			System.out.println("voyager = " + voyager.getX() + " -> " + voyager.getY());
 			System.out.println("Ve  = " + Ve.getX() + " -> " + Ve.getY());
-			System.out.println("Vvv = " + Vvv.getX() + " -> " + Vvv.getY());
-			System.out.println("Vv  = " + Vv.getX() + " -> " + Vv.getY());
+			System.out.println("Vt = " + Vt.getX() + " -> " + Vt.getY());
+			System.out.println("Vn = " + Vn.getX() + " -> " + Vn.getY());
+			System.out.println("Ve over Vt = " + Ve.over(Vt).getX() + " -> " + Ve.over(Vt).getY());
+			System.out.println("Ve over Vn = " + Ve.over(Vn).getX() + " -> " + Ve.over(Vn).getY());
+			System.out.println("Vv  = " + Vv.getX() + " -> " + Vv.getY());*/
 
 			final double voyagerMass = 751.0;
 
@@ -173,7 +181,7 @@
 				//{5.347050011076978E+10, -1.749871636534829E+10, 2440E+3, 5.681537103747067E+3, 4.849978521587917E+4, 3.302E+23},
 				//{2.169979322974804E+10, 1.055552194021935E+11, 6051.8E+3, -3.442327831494310+4, 6.878211961227505, 4.8685E+24},
 				{earth.getX(), earth.getY(), Re, Ve.getX(), Ve.getY(), 5.97219E+24},
-				{1.332381415231438E+11, 1.767318038780731E+11, 3389E+3, -1.842109512919714E+4, 1.664469813414635E+4, 6.4185E+23},
+				//{1.332381415231438E+11, 1.767318038780731E+11, 3389E+3, -1.842109512919714E+4, 1.664469813414635E+4, 6.4185E+23},
 				{1.058409319749973E+11, 7.551533616543298E+11, 71492E+3, -1.310553498751214E+4, 2.424702557330317E+3, 1898.13E+24},
 				{-1.075592980165280E+12, 8.544801191238763E+11, 60268E+3, -6.541480412587013E+3, -7.590568168145934E+3, 5.68319E+26}
 			};
@@ -185,7 +193,7 @@
 				//800.0,	// Mercury
 				//550.0,	// Venus
 				1.0,		// Earth
-				1.0,		// Mars
+				//1.0,		// Mars
 				1.0,		// Jupiter
 				1.0			// Saturn
 			};
