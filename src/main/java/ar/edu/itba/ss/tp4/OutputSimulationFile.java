@@ -24,8 +24,6 @@ public class OutputSimulationFile {
 	}
 
 	public void write(final double time, final List<MassiveParticle> list) {
-		//pw.write(String.valueOf(list.size()) + "\n");
-		//pw.write(String.valueOf(time) + "\n");
 		for (final MassiveParticle p: list) {
 			pw.write(p.getX() + " " +  p.getY() + " " +
 					p.getRadius() + " " + p.getVx() + " " + p.getVy() + "\n");
