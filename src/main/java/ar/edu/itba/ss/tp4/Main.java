@@ -93,6 +93,11 @@
 			final int N = generateParticles().size();
 			
 			final String filepath = config.getOutput(); // where I read the simulate file
+			
+			// !!!!!!!!!!!!!!!!!!!!
+			// Ahora input tiene una List con todos los gigabytes en memoria, y esto explota...
+			// Hay que leer y descargar en el archivo, no retener todo el archivo en memoria.
+			// Tampoco hay que abrir el archivo en cada lectura, sino explota también.
 			Input input = new Input(filepath);
 			
 			List<MassiveParticle> allParticles = input.getParticles();
@@ -100,8 +105,13 @@
 			
 			OutputAnimatedFile output = OutputAnimatedFile.getInstance(filepath + ".xyz");
 			double time = 0.0;
-			
+
 			for (int i = 0; i < allParticles.size() / N; i++) {
+				/*if (i % 100 != 0) {
+					// Tomar solo 1 de cada 100 chunks... (era una prueba)
+					time += deltat;
+					continue;
+				}*/
 				List<MassiveParticle> tenParticles = new ArrayList<>();
 				for (int j = 0; j < N; j++) {
 					tenParticles.add(allParticles.get(i * N + j));
@@ -148,7 +158,7 @@
 			}
 		}
 
-		private static List<MassiveParticle> generateParticles() {
+		private static List<MassiveParticle> generateParticles() { // Pasar a KM!!!
 
 			// Earth properties:
 			final double Re = 6371000.0;
@@ -160,13 +170,14 @@
 			final double voyagerDistance = 1500000.0;
 			final double voyagerMass = 751.0;
 			final Vector voyager = earth.versor().multiplyBy(earth.magnitude() + Re + voyagerDistance);
-
-			final Vector Vt = voyager.versor().tangent().multiplyBy(-1.0);
-			final Vector Vn = Vt.tangent().multiplyBy(-1.0);
-			//final Vector Vv = Vt.multiplyBy(17000.0 + Ve.over(Vt).magnitude()) //17702.8
-			//		.add(Ve.over(Vn).multiplyBy(-1.0));
-			final Vector Vv = Ve.add(Vt.subtract(Vn)
-					.multiplyBy(11000.0));
+			//System.out.println("Earth-Voyager distance: " + (voyager.subtract(earth).magnitude() - Re));
+			//System.out.println(voyager.versor().subtract(earth.versor()).magnitude());
+			final Vector Vn = voyager.versor().multiplyBy(-1.0);
+			final Vector Vt = Vn.tangent();
+			//System.out.println("Vn: " + Vn.getX() + " " + Vn.getY());
+			//System.out.println("Vt: " + Vt.getX() + " " + Vt.getY());
+			final Vector Vv = Ve.add(Vt.multiplyBy(11000.0));
+			//System.out.println("Vv: " + Vv.getX() + " " + Vv.getY());
 
 			// Bodies (at "1977-Sep-05 12:56"):
 			final double [][] bodies = {

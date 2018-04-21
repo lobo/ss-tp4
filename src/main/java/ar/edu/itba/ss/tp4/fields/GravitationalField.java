@@ -9,7 +9,7 @@
 
 	public class GravitationalField implements ForceField<MassiveParticle> {
 
-		public static final double G = 6.67191E-11;
+		public static final double G = 6.693E-11;
 
 		@Override
 		public Vector apply(
@@ -76,18 +76,14 @@
 
 		protected double potential(
 				final MassiveParticle p1, final MassiveParticle p2) {
-			final double Δx = p2.getX() - p1.getX();
-			final double Δy = p2.getY() - p1.getY();
-			final double r = Math.hypot(Δx, Δy);
-			return -G * p1.getMass() * p2.getMass() / r;
+			final Vector Δ = Vector.of(p2.getX() - p1.getX(), p2.getY() - p1.getY());
+			return -G * p1.getMass() * p2.getMass() / Δ.magnitude();
 		}
 
 		protected Vector attraction(
 				final MassiveParticle p1, final MassiveParticle p2) {
-			final double Δx = p2.getX() - p1.getX();
-			final double Δy = p2.getY() - p1.getY();
-			final double r = Math.hypot(Δx, Δy);
-			final double F = G * p1.getMass() * p2.getMass() / (r * r);
-			return Vector.of(F * Δx / r, F * Δy / r);
+			final Vector Δ = Vector.of(p2.getX() - p1.getX(), p2.getY() - p1.getY());
+			final double r = Δ.magnitude();
+			return Δ.multiplyBy(G * p1.getMass() * p2.getMass() / (r * r * r));
 		}
 	}

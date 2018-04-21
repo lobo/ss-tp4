@@ -41,7 +41,6 @@
 			final double m1 = magnitude();
 			final double m2 = vector.magnitude();
 			final double cosα = dot(vector) / (m1 * m2);
-			//System.out.println("cos(α) = " + cosα);
 			return vector.versor().multiplyBy(m1 * cosα);
 		}
 
