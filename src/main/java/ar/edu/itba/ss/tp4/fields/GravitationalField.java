@@ -9,7 +9,7 @@
 
 	public class GravitationalField implements ForceField<MassiveParticle> {
 
-		public static final double G = 6.693E-11;
+		public static final double G = 6.67191E-20;
 
 		@Override
 		public Vector apply(
@@ -64,9 +64,9 @@
 
 		@Override
 		public double potentialEnergy(final List<MassiveParticle> state) {
-			if (state.isEmpty()) return 0.0;
+			if (state.size() < 1) return 0.0;
 			else {
-				final MassiveParticle p1 = state.get(0);
+				final MassiveParticle p1 = state.get(1); // Sun
 				return state.stream()
 						.filter(p2 -> p1 != p2)
 						.mapToDouble(p2 -> potential(p1, p2))

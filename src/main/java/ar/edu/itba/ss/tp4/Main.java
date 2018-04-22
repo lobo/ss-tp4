@@ -107,11 +107,11 @@
 			double time = 0.0;
 
 			for (int i = 0; i < allParticles.size() / N; i++) {
-				/*if (i % 100 != 0) {
+				if (i % 100 != 0) {
 					// Tomar solo 1 de cada 100 chunks... (era una prueba)
 					time += deltat;
 					continue;
-				}*/
+				}
 				List<MassiveParticle> tenParticles = new ArrayList<>();
 				for (int j = 0; j < N; j++) {
 					tenParticles.add(allParticles.get(i * N + j));
@@ -158,49 +158,49 @@
 			}
 		}
 
-		private static List<MassiveParticle> generateParticles() { // Pasar a KM!!!
+		private static List<MassiveParticle> generateParticles() {
 
-			// Earth properties:
-			final double Re = 6371000.0;
-			final double earthMass = 5.97219E+24;
-			final Vector earth = Vector.of(1.443357209417353E+11, -4.369009909023139E+10);
-			final Vector Ve = Vector.of(8.156143469410742E+3, 2.839717157487163E+4);
-
-			// Voyager-1 properties:
-			final double voyagerDistance = 1500000.0;
-			final double voyagerMass = 751.0;
-			final Vector voyager = earth.versor().multiplyBy(earth.magnitude() + Re + voyagerDistance);
-			//System.out.println("Earth-Voyager distance: " + (voyager.subtract(earth).magnitude() - Re));
-			//System.out.println(voyager.versor().subtract(earth.versor()).magnitude());
-			final Vector Vn = voyager.versor().multiplyBy(-1.0);
-			final Vector Vt = Vn.tangent();
-			//System.out.println("Vn: " + Vn.getX() + " " + Vn.getY());
-			//System.out.println("Vt: " + Vt.getX() + " " + Vt.getY());
-			final Vector Vv = Ve.add(Vt.multiplyBy(11000.0));
-			//System.out.println("Vv: " + Vv.getX() + " " + Vv.getY());
-
-			// Bodies (at "1977-Sep-05 12:56"):
+			// Bodies (ephemeris at "1977-Sep-05 14:00"):
 			final double [][] bodies = {
-				{voyager.getX(), voyager.getY(), 1.0, Vv.getX(), Vv.getY(), voyagerMass},
-				{0.0, 0.0, 6.963E+8, 0.0, 0.0, 1.988544E+30},
-				//{5.347050011076978E+10, -1.749871636534829E+10, 2440E+3, 5.681537103747067E+3, 4.849978521587917E+4, 3.302E+23},
-				//{2.169979322974804E+10, 1.055552194021935E+11, 6051.8E+3, -3.442327831494310+4, 6.878211961227505, 4.8685E+24},
-				{earth.getX(), earth.getY(), Re, Ve.getX(), Ve.getY(), earthMass},
-				//{1.332381415231438E+11, 1.767318038780731E+11, 3389E+3, -1.842109512919714E+4, 1.664469813414635E+4, 6.4185E+23},
-				{1.052306803282038E+11, 7.552660211105334E+11, 71492E+3, -1.310809144834065E+4, 2.414193454159162E+3, 1898.13E+24},
-				{-1.075897485382291E+12, 8.541266557455370E+11, 60268E+3, -6.538637588011204E+3, -7.592554100817277E+3, 5.68319E+26}
+				{1.443746378444645E+08, -4.358198744660320E+07, 1.0, 1.595490974500632E+01, 4.052412934382448E+01, 721.9},
+				{0.0, 0.0, 695508.0, 0.0, 0.0, 1.988544E+30},
+				{5.370665976469804E+07, -1.503869845918308E+07, 2440.0, 3.679431626955593E+00, 4.910738195860873E+01, 3.302E+23},
+				{1.996201495050072E+07, 1.058876475713890E+08, 6051.8, -3.453463426771592E+01, 6.313060885309132E+00, 48.685E+23},
+				{1.443669994119172E+08, -4.358104129621790E+07, 6378.14, 8.134726841544820E+00, 2.840376536175890E+01, 5.97219E+24},
+				{1.323076527142476E+08, 1.775679463400601E+08, 3389.9, -1.850294805029247E+01, 1.653549992295316E+01, 6.4185E+23},
+				{1.051803449030906E+08, 7.552752897348490E+08, 71492.0, -1.310827553298509E+01, 2.413213261673731E+00, 1898.13E+24},
+				{-1.075922593297449E+09, 8.540975000330083E+08, 60268.0, -6.538402765705666E+00, -7.592714108900433E+00, 5.68319E+26},
+				//{-2.077011943942374E+09, -1.849240257862967E+09, 25559.0, 4.464954692356894E+00, -5.403290238393856E+00, 86.8103E+24},
+				//{-1.124696717554022E+09, -4.387733548085129E+09, 24766.0, 5.217279590256633E+00, -1.318879838198444E+00, 102.41E+24}
 			};
+
+			// Dynamic values for Voyager-1:
+			final Vector earth = Vector.of(bodies[4][0], bodies[4][1]);
+			final Vector Ve = Vector.of(bodies[4][3], bodies[4][4]);
+			final Vector voyager = earth.versor().multiplyBy(earth.magnitude() + bodies[4][2] + 1500.0);
+			final Vector Vn = voyager.versor().multiplyBy(-1.0);
+			final Vector Vv = Ve.add(Vn.tangent().multiplyBy(11.0));
+
+			System.out.println("Real Pv:    " + bodies[0][0] + " " + bodies[0][1]);
+			System.out.println("Dynamic Pv: " + voyager.getX() + " " + voyager.getY());
+			System.out.println("Delta Pv:   " + (voyager.magnitude() - Math.hypot(bodies[0][0], bodies[0][1])) + "\n");
+
+			System.out.println("Real Vv:    " + bodies[0][3] + " " + bodies[0][4]);
+			System.out.println("Dynamic Vv: " + Vv.getX() + " " + Vv.getY());
+			System.out.println("Delta Vv:   " + (Vv.magnitude() - Math.hypot(bodies[0][3], bodies[0][4])) + "\n");
 
 			// Para escalar el radio en Ovito:
 			final double [] scaleFactor = {
-				1.0,		// Voyager-1
-				1.0,		// Sun
-				//800.0,	// Mercury
-				//550.0,	// Venus
-				1.0,		// Earth
-				//1.0,		// Mars
-				1.0,		// Jupiter
-				1.0			// Saturn
+				1.0E+7,		// Voyager-1
+				60.0,		// Sun
+				1400.0,		// Mercury
+				1400.0,		// Venus
+				1400.0,		// Earth
+				1400.0,		// Mars
+				350.0,		// Jupiter
+				325.0,		// Saturn
+				//300.0,	// Uranus
+				//300.0		// Neptune
 			};
 
 			final List<MassiveParticle> particles = new ArrayList<>();
