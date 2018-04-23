@@ -6,7 +6,7 @@
 
 		@param source
 			El nombre del archivo.
-		@param
+		@param fps
 			El número de chunks muestreados.
 		@param step
 			El paso temporal.
