@@ -92,10 +92,8 @@
 		display.CurrentAxes.XLim = [0 (maxTime/secondsByDay)];
 		display.CurrentAxes.YLim = [0 Inf];
 		display.CurrentAxes.YLabel.String = 'Distance [AU]';
-		display.CurrentAxes.addprop('Legend');
-		display.CurrentAxes.Legend = legend({
+        legend({
 			'Distance [AU]',
 			['Minimum: ', num2str(minPt, '%.4e'), ' [AU] (', num2str(mint), ' [days])']
 		});
-		display.CurrentAxes.Legend.Location = 'southeast';
 	end
