@@ -24,7 +24,7 @@ public class Input{
 				while(dynamicRead.hasNext()){
 					if (i % n == 0) {
 						out.write(n.toString() + "\n");
-						deltat += deltat;
+						deltat += (3600 + deltat);
 						out.write(deltat.toString() + "\n");
 					}
 					out.write(dynamicRead.next() + " "); // x
