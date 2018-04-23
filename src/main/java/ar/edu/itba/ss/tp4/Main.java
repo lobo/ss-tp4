@@ -94,12 +94,13 @@
 			
 			final String filepath = config.getOutput(); // where I read the simulate file
 			final Double deltat = config.getDeltat();
+			final Integer fps = config.getFPS();
 			
 			// !!!!!!!!!!!!!!!!!!!!
 			// Ahora input tiene una List con todos los gigabytes en memoria, y esto explota...
 			// Hay que leer y descargar en el archivo, no retener todo el archivo en memoria.
 			// Tampoco hay que abrir el archivo en cada lectura, sino explota también.
-			Input input = new Input(N, deltat, filepath);
+			Input input = new Input(N, deltat, fps, filepath);
 			
 			//List<MassiveParticle> allParticles = input.getParticles();
 			/*
