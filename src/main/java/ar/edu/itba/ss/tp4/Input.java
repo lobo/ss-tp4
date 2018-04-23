@@ -1,21 +1,16 @@
 package ar.edu.itba.ss.tp4;
 
+import java.io.BufferedWriter;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.util.Scanner;
-
-import ar.edu.itba.ss.tp3.core.MassiveParticle;
 
 public class Input{
 	
-	private static List<MassiveParticle> particles = new ArrayList<MassiveParticle>();
+	private PrintWriter out;
 	
-	public List<MassiveParticle> getParticles() {
-		return particles;
-	}
-
-	public Input (String dynamicFilePath) {
+	public Input (Integer n, Double deltat, String dynamicFilePath) {
 
 		try {
 			
@@ -23,16 +18,22 @@ public class Input{
 			
 			try {
 				Scanner dynamicRead = new Scanner(dynamicFile);
+				out = new PrintWriter(new BufferedWriter(new FileWriter("data.xyz", true)));
 				
+				int i = 0;
 				while(dynamicRead.hasNext()){
-					particles.add(new MassiveParticle(
-							Double.parseDouble(dynamicRead.next()), // x
-							Double.parseDouble(dynamicRead.next()), // y
-							Double.parseDouble(dynamicRead.next()), //radius 
-							Double.parseDouble(dynamicRead.next()), // vx
-							Double.parseDouble(dynamicRead.next()), // vy
-							0) // mass -> for the purpose of parsing, I do not need the mass
-					);
+					if (i % n == 0) {
+						out.write(n.toString() + "\n");
+						deltat += deltat;
+						out.write(deltat.toString() + "\n");
+					}
+					out.write(dynamicRead.next() + " "); // x
+					out.write(dynamicRead.next() + " "); // y
+					out.write(dynamicRead.next() + " "); // radius
+					out.write(dynamicRead.next() + " "); // vx
+					out.write(dynamicRead.next() + " "); // vy
+					out.write("\n");
+					i++;
 				}
 				
 				dynamicRead.close();			
