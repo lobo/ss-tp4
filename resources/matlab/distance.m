@@ -6,6 +6,8 @@
 
 		@param source
 			El nombre del archivo.
+		@param fps
+			El número de chunks muestreados.
 		@param step
 			El paso temporal.
 		@maxTime
@@ -17,33 +19,47 @@
 			partículas, se debe cumplir 0 <= ID < N.
 	%}
 
-	function [] = distance(source, step, maxTime, bodies, target)
+	function [] = distance(source, fps, step, maxTime, bodies, target)
 
-		% Unidad Astronómica:
-		AU = 149597870700.0;
+		% Unidad Astronómica (en [km]):
+		AU = 149597870.7;
 		secondsByDay = 3600.0 * 24.0;
+
+		scaleFactor = {
+			1.0E+7,		% Voyager-1
+			60.0,		% Sun
+			%1400.0,	% Mercury
+			%1400.0,	% Venus
+			1400.0,		% Earth
+			%1400.0,	% Mars
+			350.0,		% Jupiter
+			325.0,		% Saturn
+			%300.0,		% Uranus
+			%300.0		% Neptune
+		};
 
 		body = {
 			'Voyager-1',	% 0
 			'Sun',			% 1
-			'Mercury',		% 2
-			'Venus',		% 3
+			%'Mercury',		% 2
+			%'Venus',		% 3
 			'Earth',		% 4
-			'Mars',			% 5
+			%'Mars',		% 5
 			'Jupiter',		% 6
 			'Saturn'		% 7
-			%'Uranus',
-			%'Neptune'
+			%'Uranus',		% 8
+			%'Neptune'		& 9
 		};
 
 		disp(['Reading ', source, ' ...']);
 		xyrvv = importdata(source);
 
-		time = (0.0:step:maxTime)';
+		time = (0.0:(step*fps):maxTime)';
+		radius = xyrvv(1 + target, 3) / scaleFactor{target + 1};
 		Pv(:, 1:2) = xyrvv(1 + bodies .* (0:size(time, 1) - 1), 1:2);
 		Pt(:, 1:2) = xyrvv(1 + target + bodies .* (0:size(time, 1) - 1), 1:2) - Pv;
 		Pt = Pt .* Pt;
-		Pt = sqrt(Pt(:, 1) + Pt(:, 2)) / AU;
+		Pt = (sqrt(Pt(:, 1) + Pt(:, 2)) - radius) / AU;
 
 		[minPt, index] = min(Pt, [], 1);
 		mint = time(index, 1) / secondsByDay;

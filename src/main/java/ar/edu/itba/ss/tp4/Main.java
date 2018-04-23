@@ -92,6 +92,9 @@
 					config.getFPS(),				// Cada cuánto leer un chunk
 					generateParticles().size(),		// Tamaño de cada chunk
 					config.getDeltat());			// Paso temporal
+
+			// Generar el archivo de simulación pequeño:
+			SmallSimulation.generate(config.getOutput());
 		}
 
 		public static void main(final String [] arguments)
