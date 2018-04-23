@@ -79,52 +79,19 @@
 
 			output.close();
 		}
-		
-
 
 		protected static void animateMode(final String mode) throws JsonParseException, JsonMappingException, IOException {
 			System.out.println("A time-driven animation...");
-			// Acá usás FPS...
-			
 			final Configurator configurator = new Configurator();
 			configurator.load();
 			final Configuration config = configurator.getConfiguration();
-			
-			final int N = generateParticles().size();
-			
-			final String filepath = config.getOutput(); // where I read the simulate file
-			final Double deltat = config.getDeltat();
-			final Integer fps = config.getFPS();
-			
-			// !!!!!!!!!!!!!!!!!!!!
-			// Ahora input tiene una List con todos los gigabytes en memoria, y esto explota...
-			// Hay que leer y descargar en el archivo, no retener todo el archivo en memoria.
-			// Tampoco hay que abrir el archivo en cada lectura, sino explota también.
-			Input input = new Input(N, deltat, fps, filepath);
-			
-			//List<MassiveParticle> allParticles = input.getParticles();
-			/*
-			final Double deltat = config.getDeltat();
-			
-			OutputAnimatedFile output = OutputAnimatedFile.getInstance(filepath + ".xyz");
-			double time = 0.0;
 
-			for (int i = 0; i < allParticles.size() / N; i++) {
-				if (i % 100 != 0) {
-					// Tomar solo 1 de cada 100 chunks... (era una prueba)
-					time += deltat;
-					continue;
-				}
-				List<MassiveParticle> tenParticles = new ArrayList<>();
-				for (int j = 0; j < N; j++) {
-					tenParticles.add(allParticles.get(i * N + j));
-				}
-				output.write(tenParticles, time);
-				time += deltat;
-			}
-			
-			System.out.println("The animated file has been saved in: " + filepath + ".xyz");
-						*/
+			// Generar el archivo de animación:
+			Animation.generate(
+					config.getOutput(),				// Archivo de simulación
+					config.getFPS(),				// Cada cuánto leer un chunk
+					generateParticles().size(),		// Tamaño de cada chunk
+					config.getDeltat());			// Paso temporal
 		}
 
 		public static void main(final String [] arguments)
@@ -192,14 +159,22 @@
 			System.out.println("Dynamic Vv: " + Vv.getX() + " " + Vv.getY());
 			System.out.println("Delta Vv:   " + (Vv.magnitude() - Math.hypot(bodies[0][3], bodies[0][4])) + "\n");
 
+			// Descomentar cuando quieras usar las propiedades del Voyager dinámicas:
+			/*
+			bodies[0][0] = voyager.getX();
+			bodies[0][1] = voyager.getY();
+			bodies[0][3] = Vv.getX();
+			bodies[0][4] = Vv.getY();
+			*/
+
 			// Para escalar el radio en Ovito:
 			final double [] scaleFactor = {
 				1.0E+7,		// Voyager-1
 				60.0,		// Sun
-				//1400.0,		// Mercury
-				//1400.0,		// Venus
+				//1400.0,	// Mercury
+				//1400.0,	// Venus
 				1400.0,		// Earth
-				//1400.0,		// Mars
+				//1400.0,	// Mars
 				350.0,		// Jupiter
 				325.0,		// Saturn
 				//300.0,	// Uranus
