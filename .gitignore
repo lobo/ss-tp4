@@ -30,3 +30,4 @@ target/
 *.txt
 *.xyz
 *.data.xyz
+*.data.small
