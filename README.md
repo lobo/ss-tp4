@@ -41,12 +41,12 @@ Receives a JSON file with the following format (see example below):
 
 ```json
 {
-	"fps"			: "40",
-	"deltat"		: "0.000001",
+	"fps"			: "100",
+	"deltat"		: "100.0",
 	"integrator"	: "Beeman",
-	"system"		: "HarmonicOscillator",
-	"output"		: "resources/data/hm-beeman.data",
-	"maxtime"		: "5.0"
+	"system"		: "GravitationalField",
+	"output"		: "resources/data/beeman.data",
+	"maxtime"		: "157680000.0"
 }
 ```
 
