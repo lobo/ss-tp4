@@ -74,6 +74,61 @@ Where `<v>` is the module of the speed.
 
 [Video of the simulation](https://youtu.be/R_q-2zFcNWA)
 
+## Simulaciones para otras fechas
+
+### Mar 77
+
+* Jupiter: 
+	* 3.9857e+00 AU
+	*  458.6806 days
+* Saturn:
+	*  8.2487e+00 AU
+	*  521.412 days
+
+- - - -
+
+### Jun 77
+* Jupiter
+	* 3.5735e+00 AU
+	* 283.3333 days
+* Saturn
+	* 7.7907e+00 AU
+	* 380.9028 days
+
+- - - -
+
+### Sept 77
+
+* Jupiter: 
+	* 1.8653e-03 AU
+	* 545.8333 days
+* Saturn:
+	* 6.5126e-04 AU
+	* 1166.088 days
+
+- - - -
+
+### Dec 77
+
+* Jupiter: 
+	*  3.9226e+00 AU
+	*  1825 days
+* Saturn:
+	*  8.1816e+00 AU
+	*  74.537 days
+
+- - - -
+
+### Mar 78
+
+* Jupiter: 
+	*  4.2744e+00 AU
+	*  506.1343 days
+* Saturn:
+	*  8.2790e+00 AU
+	*  0 days
+
+
 ## Developers
 
 This project has been built, designed and maintained by the following authors:
