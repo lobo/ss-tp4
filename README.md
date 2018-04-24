@@ -72,9 +72,9 @@ Where `<v>` is the module of the speed.
 
 ## Videos
 
-Here are some videos of the simulations:
+Video of the simulation:
 
-...
+[Video](https://youtu.be/R_q-2zFcNWA)
 
 ## Developers
 
