@@ -184,8 +184,8 @@
 				//1400.0,	// Venus
 				1400.0,		// Earth
 				//1400.0,	// Mars
-				350.0,		// Jupiter
-				325.0,		// Saturn
+				200.0,		// Jupiter
+				200.0,		// Saturn
 				//300.0,	// Uranus
 				//300.0		// Neptune
 			};
