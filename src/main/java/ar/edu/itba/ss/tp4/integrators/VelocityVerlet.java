@@ -5,74 +5,80 @@
 	import java.util.List;
 
 	import ar.edu.itba.ss.tp3.core.MassiveParticle;
+	import ar.edu.itba.ss.tp4.core.MassiveParticleFactory;
 	import ar.edu.itba.ss.tp4.core.Vector;
 	import ar.edu.itba.ss.tp4.interfaces.ForceField;
 	import ar.edu.itba.ss.tp4.interfaces.Integrator;
 
-	public class VelocityVerlet implements Integrator<MassiveParticle> {
+	public class VelocityVerlet<T extends MassiveParticle>
+		implements Integrator<T> {
 
-		protected final ForceField<MassiveParticle> force;
-		protected final List<MassiveParticle> state;
+		protected final ForceField<T> force;
+		protected final MassiveParticleFactory<T> factory;
+		protected final List<T> state;
 
-		public VelocityVerlet(final Builder builder) {
+		public VelocityVerlet(final Builder<T> builder) {
 			this.force = builder.force;
 			this.state = builder.state;
+			this.factory = builder.factory;
 		}
 
-		public static Builder of(final ForceField<MassiveParticle> force) {
-			return new Builder(force);
+		public static <T extends MassiveParticle> Builder<T> of(final ForceField<T> force) {
+			return new Builder<T>(force);
 		}
 
 		@Override
-		public List<MassiveParticle> getState() {
+		public List<T> getState() {
 			return state;
 		}
 
 		@Override
-		public ForceField<MassiveParticle> getForceField() {
+		public ForceField<T> getForceField() {
 			return force;
 		}
 
 		@Override
-		public List<MassiveParticle> integrate(final double Δt) {
+		public List<T> integrate(final double Δt) {
 			final int N = state.size();
 			final List<Vector> forces = new ArrayList<>(N);
-			final List<MassiveParticle> predicted = new ArrayList<>(N);
+			final List<T> predicted = new ArrayList<>(N);
 			for (int i = 0; i < N; ++i) {
-				final MassiveParticle p = state.get(i);
+				final T p = state.get(i);
 				final Vector f = force.apply(state, p);
 				final Vector r = r(Δt, p, f);
 				forces.add(f);
-				predicted.add(new MassiveParticle(
-						r.getX(), r.getY(), p.getRadius(),
-						p.getVx(), p.getVy(), p.getMass()));
+				predicted.add(factory.from(p)
+						.x(r.getX()).y(r.getY())
+						.create());
 			}
 			for (int i = 0; i < N; ++i) {
-				final MassiveParticle p = predicted.get(i);
+				final T p = predicted.get(i);
 				final Vector f = forces.get(i);
 				final Vector fNew = force.apply(predicted, p);
 				final Vector v = v(Δt, p, fNew, f);
-				state.set(i, p.bounce(v.getX(), v.getY()));
+				state.set(i, factory.from(p)
+						.vx(v.getX()).vy(v.getY())
+						.create());
 			}
 			return state;
 		}
 
-		public static class Builder
-			extends IntegratorBuilder<VelocityVerlet> {
+		public static class Builder<T extends MassiveParticle>
+			extends IntegratorBuilder<T, VelocityVerlet<T>> {
 
-			public Builder(final ForceField<MassiveParticle> force) {
+			public Builder(final ForceField<T> force) {
 				super(force);
 			}
 
 			@Override
-			public VelocityVerlet build() {
-				return new VelocityVerlet(this);
+			public VelocityVerlet<T> build() {
+				return new VelocityVerlet<>(this);
 			}
 		}
 
 		protected Vector r(
 				final double Δt,
-				final MassiveParticle p,
+				final T p,
 				final Vector f) {
 			return Vector.of(
 					p.getX() + Δt * p.getVx() + 0.5 * Δt * Δt * f.getX() / p.getMass(),
@@ -81,7 +87,7 @@
 
 		protected Vector v(
 				final double Δt,
-				final MassiveParticle p,
+				final T p,
 				final Vector fNew, final Vector f) {
 			return Vector.of(
 					p.getVx() + 0.5 * Δt * (fNew.getX() + f.getX()) / p.getMass(),
