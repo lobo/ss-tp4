@@ -15,6 +15,7 @@
 		protected final double maxTime;
 		protected final double Δt;
 		protected final boolean reportEnergy;
+		protected final boolean reportTime;
 
 		public TimeDrivenSimulation(final Builder<T> builder) {
 			System.out.println(
@@ -29,6 +30,7 @@
 			this.maxTime = builder.maxTime;
 			this.Δt = builder.Δt;
 			this.reportEnergy = builder.reportEnergy;
+			this.reportTime = builder.reportTime;
 		}
 
 		public static <T extends MassiveParticle> Builder<T> of(final Integrator<T> integrator) {
@@ -53,7 +55,9 @@
 				.mapToDouble(k -> k * Δt)
 				.forEachOrdered(time -> {
 					spy.accept(time, integrator.integrate(Δt));
-					System.out.print("\t\tTime reached: " + time + " [s]                    \r");
+					if (reportTime && Math.round(time/Δt) % 1000 == 0) {
+						System.out.print("\t\tTime reached: " + time + " [s]                    \r");
+					}
 					if (reportEnergy) {
 						final double energy = integrator.getEnergy(time);
 						energyBounds[0] = Math.min(energyBounds[0], energy);
@@ -83,12 +87,15 @@
 			protected double maxTime;
 			protected double Δt;
 			protected boolean reportEnergy;
+			protected boolean reportTime;
 
 			public Builder(final Integrator<T> integrator) {
 				this.integrator = integrator;
 				this.spy = (t, ps) -> {};
 				this.maxTime = 10.0;
 				this.Δt = 1.0;
+				this.reportTime = true;
+				this.reportEnergy = false;
 			}
 
 			public TimeDrivenSimulation<T> build() {
@@ -112,6 +119,11 @@
 
 			public Builder<T> reportEnergy(final boolean report) {
 				this.reportEnergy = report;
+				return this;
+			}
+
+			public Builder<T> reportTime(final boolean report) {
+				this.reportTime = report;
 				return this;
 			}
 		}
