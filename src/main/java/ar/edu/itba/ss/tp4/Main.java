@@ -229,7 +229,7 @@
 			final Vector earth = Vector.of(bodies[2][0], bodies[2][1]);
 			final Vector Ve = Vector.of(bodies[2][3], bodies[2][4]);
 			final Vector voyager = earth.versor().multiplyBy(earth.magnitude() + bodies[2][2] + 1500.0);
-			final Vector Vn = voyager.versor().multiplyBy(-1.0);
+			final Vector Vn = voyager.versor();//.multiplyBy(-1.0);
 			final Vector Vv = Ve.add(Vn.tangent().multiplyBy(11.0));
 
 			System.out.println("Real Pv:    " + bodies[0][0] + " " + bodies[0][1]);

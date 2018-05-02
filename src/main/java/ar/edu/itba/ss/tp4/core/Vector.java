@@ -65,6 +65,6 @@
 		}
 
 		public Vector tangent() {
-			return Vector.of(y, -x);
+			return Vector.of(-y, x);
 		}
 	}
